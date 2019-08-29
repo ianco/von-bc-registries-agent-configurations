@@ -284,6 +284,10 @@
       "required": true,
       "value": "postgresql-oracle-fdw"
     },
+
+
+
+    
     {
       "name": "POSTGRESQL_DATABASE_NAME",
       "displayName": "PostgreSQL Database Name",
