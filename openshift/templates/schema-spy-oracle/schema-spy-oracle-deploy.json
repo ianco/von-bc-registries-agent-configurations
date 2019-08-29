@@ -347,7 +347,7 @@
       "displayName": "Database Deployment Name",
       "description": "The name associated to the database deployment resources.  In particular, this is used to wrie up the credentials associated to the database.",
       "required": true,
-      "value": "postgresql-oracle-fdw"
+      "value": "bc-reg-fdw"
     },
     {
       "name": "DATABASE_TYPE",

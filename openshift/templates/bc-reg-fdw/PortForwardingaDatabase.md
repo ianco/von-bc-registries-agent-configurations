@@ -24,7 +24,7 @@ To accomplish this, we will use OpenShift port forwarding.  Some additional deta
   angular-on-nginx-160-tgjnv      1/1       Running   0          10d
   django-234-4qqdk                1/1       Running   0          41m
   postgresql-8-xmjkx              1/1       Running   0          9d
-  postgresql-oracle-fdw-1-hvrhz   1/1       Running   0          9d
+  bc-reg-fdw-1-hvrhz   1/1       Running   0          9d
   schema-spy-49-fkchj             1/1       Running   0          10d
   schema-spy-oracle-12-deploy     0/1       Error     0          6d
   schema-spy-oracle-15-8n9kj      1/1       Running   0          5d
@@ -32,7 +32,7 @@ To accomplish this, we will use OpenShift port forwarding.  Some additional deta
   ```
 - Port forward the PostgreSQL port to your local machine
   ```
-  $ oc port-forward postgresql-oracle-fdw-1-hvrhz 5432:5432
+  $ oc port-forward bc-reg-fdw-1-hvrhz 5432:5432
   Forwarding from 127.0.0.1:5432 -> 5432
   Forwarding from [::1]:5432 -> 5432
   127.0.0.1:5432Handling connection for 5432
@@ -46,8 +46,8 @@ To accomplish this, we will use OpenShift port forwarding.  Some additional deta
 - Create a new Server and given it a name.
 - On the connection tab enter;
   - Host Name: 127.0.0.1
-  - User Name: Enter the randomly generated username assigned to the database contained in the `postgresql-oracle-fdw.database-user` secret.
-  - Password: Enter the randomly generated password assigned to the database contained in the `postgresql-oracle-fdw.database-password` secret.
+  - User Name: Enter the randomly generated username assigned to the database contained in the `bc-reg-fdw.database-user` secret.
+  - Password: Enter the randomly generated password assigned to the database contained in the `bc-reg-fdw.database-password` secret.
 - Click save.
 
 You should now be able to make queries.

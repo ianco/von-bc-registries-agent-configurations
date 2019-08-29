@@ -282,7 +282,7 @@
       "displayName": "Name",
       "description": "The name assigned to all of the OpenShift resources associated to the PostgreSQL instance.",
       "required": true,
-      "value": "postgresql-oracle-fdw"
+      "value": "bc-reg-fdw"
     },
 
 
@@ -376,7 +376,7 @@
       "displayName": "Source Image Name",
       "description": "The name of the image to use for this resource.",
       "required": true,
-      "value": "postgresql-oracle-fdw"
+      "value": "bc-reg-fdw"
     },
     {
       "name": "TAG_NAME",

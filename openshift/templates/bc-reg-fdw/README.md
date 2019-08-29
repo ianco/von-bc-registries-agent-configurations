@@ -10,7 +10,7 @@ Refer to [Oracle-fdw-Testing](oracle-fdw-testing.md) for information on configur
 
 Database credentials are randomly generated as OpenShift secrets when the deployment configuration is first created.
 
-All of the credentials are listed under a single secrete named `postgresql-oracle-fdw`.  The `fdw-user` and `fdw-password` are mounted as `FDW_USER` and `FDW_PASS` and used as the credentials for the foreign (Oracle) database.  You should update these credentials with the ones provided for your Oracle database connection before tagging any images for deployment, as all of the credentials are used when the pod is first initialized.
+All of the credentials are listed under a single secrete named `bc-reg-fdw`.  The `fdw-user` and `fdw-password` are mounted as `FDW_USER` and `FDW_PASS` and used as the credentials for the foreign (Oracle) database.  You should update these credentials with the ones provided for your Oracle database connection before tagging any images for deployment, as all of the credentials are used when the pod is first initialized.
 
 If you find you need to change the credentials after the fact (such as if you forgot to set them to the correct values in the first place) the easiest thing to do is drop the persitant data from `/var/lib/pgsql/data` and allow the pod to re-initialize it's environment.
 

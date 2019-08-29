@@ -352,7 +352,7 @@
       "displayName": "BC Registries Database Host",
       "description": "BC Registries Database Host.",
       "required": true,
-      "value": "postgresql-oracle-fdw"
+      "value": "bc-reg-fdw"
     },
     {
       "name": "BC_REG_DB_PORT",
