@@ -11,7 +11,7 @@
       "metadata": {
         "name": "${NAME}",
         "labels": {
-          "name": "${NAME}${SUFFIX}",
+          "name": "${NAME}",
           "app": "${APP_NAME}${SUFFIX}",
           "app-group": "${APP_GROUP}"
         }
@@ -23,7 +23,7 @@
       "metadata": {
         "name": "${NAME}",
         "labels": {
-          "name": "${NAME}${SUFFIX}",
+          "name": "${NAME}",
           "app": "${APP_NAME}${SUFFIX}",
           "app-group": "${APP_GROUP}"
         }
@@ -88,7 +88,7 @@
       "displayName": "App Name",
       "description": "Used to group components together in the OpenShift console.",
       "required": true,
-      "value": "BC Registries Agent"
+      "value": "BcRegistriesAgent"
     },
     {
       "name": "APP_GROUP",

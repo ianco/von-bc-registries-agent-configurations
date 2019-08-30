@@ -255,7 +255,7 @@ parameters:
   displayName: App Name
   description: Used to group components together in the OpenShift console.
   required: true
-  value: OrgBook
+  value: BcRegistriesAgent
 - name: APP_GROUP
   displayName: App Group
   description: Used to group components together.
@@ -265,7 +265,7 @@ parameters:
   displayName: Application Hostname
   description: The exposed hostname that will route to the service, if left blank a value will be defaulted.
   required: false
-  value: orgbook-agent-dev.pathfinder.gov.bc.ca
+  value: bc-reg-agent-dev.pathfinder.gov.bc.ca
 - name: IMAGE_NAMESPACE
   displayName: Namespace containing application images.
   required: true
@@ -284,7 +284,7 @@ parameters:
   displayName: Agent endpoint
   description: The endpoint of the agent
   required: true
-  value: https://orgbook-agent-dev.pathfinder.gov.bc.ca
+  value: https://bc-reg-agent-dev.pathfinder.gov.bc.ca
 - name: WEBHOOK_URL
   displayName: Webhook URL
   description: The webhook endpoint

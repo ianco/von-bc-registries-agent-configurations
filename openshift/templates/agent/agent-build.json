@@ -88,7 +88,7 @@
       "displayName": "App Name",
       "description": "Used to group components together in the OpenShift console.",
       "required": true,
-      "value": "OrgBook"
+      "value": "BcRegistriesAgent"
     },
     {
       "name": "APP_GROUP",
