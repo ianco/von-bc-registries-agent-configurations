@@ -113,7 +113,7 @@
             "displayName": "Source Context Directory",
             "description": "The source context directory.",
             "required": false,
-            "value": "von-bc-registries-agent-configurations/openshift/templates/db/config"
+            "value": "openshift/templates/db/config"
         },
         {
             "name": "SOURCE_IMAGE_KIND",
