@@ -116,12 +116,26 @@
                     "value": "${FDW_NAME}"
                   },
                   {
+                    "name": "FDW_SCHEMA",
+                    "value": "${FDW_SCHEMA}"
+                  },
+                  {
                     "name": "FDW_FOREIGN_SCHEMA",
-                    "value": "${FDW_FOREIGN_SCHEMA}"
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${NAME}${SUFFIX}",
+                        "key": "fdw-schema"
+                      }
+                    }
                   },
                   {
                     "name": "FDW_FOREIGN_SERVER",
-                    "value": "${FDW_FOREIGN_SERVER}"
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${NAME}${SUFFIX}",
+                        "key": "fdw-server"
+                      }
+                    }
                   },
                   {
                     "name": "FDW_USER",
@@ -140,10 +154,6 @@
                         "key": "fdw-password"
                       }
                     }
-                  },
-                  {
-                    "name": "FDW_SCHEMA",
-                    "value": "${FDW_SCHEMA}"
                   }
                 ],
                 "resources": {
@@ -244,7 +254,9 @@
         "database-password": "${POSTGRESQL_PASSWORD}",
         "database-user": "${POSTGRESQL_USER}",
         "fdw-password": "${FDW_PASS}",
-        "fdw-user": "${FDW_USER}"
+        "fdw-user": "${FDW_USER}",
+        "fdw-schema": "${FDW_FOREIGN_SCHEMA}",
+        "fdw-server": "${FDW_FOREIGN_SERVER}"
       },
       "type": "Opaque"
     },
@@ -284,17 +296,33 @@
       "required": true,
       "value": "bc-reg-fdw"
     },
-
-
-
-    
+    {
+      "name": "SUFFIX",
+      "displayName": "Suffix",
+      "description": "A name suffix used for all objects",
+      "required": false,
+      "value": "-indy-cat"
+    },
+    {
+      "name": "APP_NAME",
+      "displayName": "App Name",
+      "description": "Used to group components together in the OpenShift console.",
+      "required": true,
+      "value": "BcRegistriesAgent"
+    },
+    {
+      "name": "APP_GROUP",
+      "displayName": "App Group",
+      "description": "The name assigned to all of the deployments in this project.",
+      "required": true,
+      "value": "indy-catalyst"
+    },
     {
       "name": "POSTGRESQL_DATABASE_NAME",
       "displayName": "PostgreSQL Database Name",
       "description": "The name of the PostgreSQL database.",
       "required": true,
-      "generate": "expression",
-      "from": "[a-zA-Z_][a-zA-Z0-9_]{10}"
+      "value": "BC_REGISTRIES"
     },
     {
       "name": "POSTGRESQL_USER",
