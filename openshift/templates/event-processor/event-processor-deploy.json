@@ -28,7 +28,7 @@
       "kind": "Service",
       "apiVersion": "v1",
       "metadata": {
-        "name": "${NAME}",
+        "name": "${NAME}${SUFFIX}",
         "labels": {
           "name": "${NAME}${SUFFIX}",
           "app": "${APP_NAME}${SUFFIX}",
@@ -45,7 +45,7 @@
           }
         ],
         "selector": {
-          "name": "${NAME}"
+          "name": "${NAME}${SUFFIX}"
         }
       }
     },
@@ -53,7 +53,7 @@
       "kind": "DeploymentConfig",
       "apiVersion": "v1",
       "metadata": {
-        "name": "${NAME}",
+        "name": "${NAME}${SUFFIX}",
         "labels": {
           "name": "${NAME}${SUFFIX}",
           "app": "${APP_NAME}${SUFFIX}",
@@ -95,11 +95,11 @@
         ],
         "replicas": 1,
         "selector": {
-          "name": "${NAME}"
+          "name": "${NAME}${SUFFIX}"
         },
         "template": {
           "metadata": {
-            "name": "${NAME}",
+            "name": "${NAME}${SUFFIX}",
             "labels": {
               "name": "${NAME}${SUFFIX}",
               "app": "${APP_NAME}${SUFFIX}",
@@ -109,7 +109,7 @@
           "spec": {
             "containers": [
               {
-                "name": "${NAME}",
+                "name": "${NAME}${SUFFIX}",
                 "image": " ",
                 "ports": [
                   {
