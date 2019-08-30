@@ -81,6 +81,10 @@
                 ],
                 "env": [
                   {
+                    "name": "POSTGRESQL_DATABASE",
+                    "value": "${POSTGRESQL_DATABASE_NAME}"
+                  },
+                  {
                     "name": "POSTGRESQL_USER",
                     "valueFrom": {
                       "secretKeyRef": {
@@ -108,10 +112,6 @@
                     }
                   },
                   {
-                    "name": "POSTGRESQL_DATABASE",
-                    "value": "${POSTGRESQL_DATABASE_NAME}"
-                  },
-                  {
                     "name": "FDW_NAME",
                     "value": "${FDW_NAME}"
                   },
@@ -120,20 +120,20 @@
                     "value": "${FDW_SCHEMA}"
                   },
                   {
-                    "name": "FDW_FOREIGN_SCHEMA",
-                    "valueFrom": {
-                      "secretKeyRef": {
-                        "name": "${NAME}${SUFFIX}",
-                        "key": "fdw-schema"
-                      }
-                    }
-                  },
-                  {
                     "name": "FDW_FOREIGN_SERVER",
                     "valueFrom": {
                       "secretKeyRef": {
                         "name": "${NAME}${SUFFIX}",
                         "key": "fdw-server"
+                      }
+                    }
+                  },
+                  {
+                    "name": "FDW_FOREIGN_SCHEMA",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "${NAME}${SUFFIX}",
+                        "key": "fdw-schema"
                       }
                     }
                   },
@@ -253,10 +253,13 @@
         "admin-password": "${POSTGRESQL_ADMIN_PASSWORD}",
         "database-password": "${POSTGRESQL_PASSWORD}",
         "database-user": "${POSTGRESQL_USER}",
-        "fdw-password": "${FDW_PASS}",
-        "fdw-user": "${FDW_USER}",
+        "fdw-host": "${FDW_FOREIGN_HOST}",
+        "fdw-name": "${FDW_FOREIGN_NAME}",
+        "fdw-catalog": "${FDW_FOREIGN_CATALOG}",
         "fdw-schema": "${FDW_FOREIGN_SCHEMA}",
-        "fdw-server": "${FDW_FOREIGN_SERVER}"
+        "fdw-server": "${FDW_FOREIGN_HOST}/${FDW_FOREIGN_CATALOG}",
+        "fdw-user": "${FDW_USER}",
+        "fdw-password": "${FDW_PASS}"
       },
       "type": "Opaque"
     },
@@ -356,16 +359,37 @@
       "value": "bc_registries_wrapper"
     },
     {
-      "name": "FDW_FOREIGN_SCHEMA",
-      "displayName": "Foreign Data Schema",
-      "description": "Oracle schema from which to get the data.",
+      "name": "FDW_SCHEMA",
+      "displayName": "PostgreSql Data Schema",
+      "description": "Postgres schema to send data to.",
+      "required": true,
+      "value": "bc_registries"
+    },
+    {
+      "name": "FDW_FOREIGN_HOST",
+      "displayName": "Foreign Data Host Server",
+      "description": "The host:port of the foreign Oracle database server.",
       "required": true,
       "value": ""
     },
     {
-      "name": "FDW_FOREIGN_SERVER",
-      "displayName": "Foreign Data Server",
-      "description": "The Oracle server reference.",
+      "name": "FDW_FOREIGN_NAME",
+      "displayName": "Foreign Database Name",
+      "description": "The name of the foreign Oracle database.",
+      "required": true,
+      "value": ""
+    },
+    {
+      "name": "FDW_FOREIGN_CATALOG",
+      "displayName": "Foreign Database Catalog Name",
+      "description": "The name of the catalog of the foreign Oracle database.",
+      "required": true,
+      "value": ""
+    },
+    {
+      "name": "FDW_FOREIGN_SCHEMA",
+      "displayName": "Foreign Data Schema",
+      "description": "Oracle schema from which to get the data.",
       "required": true,
       "value": ""
     },
@@ -384,13 +408,6 @@
       "required": true,
       "generate": "expression",
       "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
-    },
-    {
-      "name": "FDW_SCHEMA",
-      "displayName": "PostgreSql Data Schema",
-      "description": "Postgres schema to send data to.",
-      "required": true,
-      "value": "bc_registries"
     },
     {
       "name": "IMAGE_NAMESPACE",
