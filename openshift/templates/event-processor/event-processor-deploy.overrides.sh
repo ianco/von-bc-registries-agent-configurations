@@ -1,7 +1,7 @@
 
 .  $(find . -name overrides.inc)
 # ========================================================================
-# Special Deployment Parameters needed for the mara instance.
+# Special Deployment Parameters needed for the event-processor instance.
 # ------------------------------------------------------------------------
 # ========================================================================
 if createOperation; then

@@ -254,7 +254,7 @@
       "displayName": "Name",
       "description": "The name assigned to all of the OpenShift resources associated to the server instance.",
       "required": true,
-      "value": "db"
+      "value": "event-db"
     },
     {
       "name": "SUFFIX",
