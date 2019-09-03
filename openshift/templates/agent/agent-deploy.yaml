@@ -269,7 +269,7 @@ parameters:
 - name: IMAGE_NAMESPACE
   displayName: Namespace containing application images.
   required: true
-  value: devex-von-tools
+  value: devex-von-bc-registries-agent-tools
 - name: TAG_NAME
   displayName: Environment TAG name
   description: The TAG name for this environment, e.g., dev, test, prod.

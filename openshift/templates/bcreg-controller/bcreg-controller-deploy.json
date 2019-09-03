@@ -294,7 +294,7 @@
       "displayName": "Application Url",
       "description": "The application URL.",
       "required": true,
-      "value": "https://bcreg-controller-dev.pathfinder.gov.bc.ca/"
+      "value": "https://bcreg-controller-dev.pathfinder.gov.bc.ca"
     },
     {
       "name": "CONFIG_ROOT",
