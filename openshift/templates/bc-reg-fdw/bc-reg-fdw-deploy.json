@@ -154,6 +154,14 @@
                         "key": "fdw-password"
                       }
                     }
+                  },
+                  {
+                    "name": "POSTGIS_EXTENSION",
+                    "value": "${POSTGIS_EXTENSION}"
+                  },
+                  {
+                    "name": "PGCRYPTO_EXTENSION",
+                    "value": "${PGCRYPTO_EXTENSION}"
                   }
                 ],
                 "resources": {
@@ -408,6 +416,20 @@
       "required": true,
       "generate": "expression",
       "from": "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+    },
+    {
+      "name": "POSTGIS_EXTENSION",
+      "displayName": "Enable PostGIS Extension",
+      "required": true,
+      "description": "Enable/Disable the PostGIS Extension.  Set to 'Y' to install and enable the extension, set to 'N' otherwise.",
+      "value": "N"
+    },
+    {
+      "name": "PGCRYPTO_EXTENSION",
+      "displayName": "Enable pgcrypto Extension",
+      "required": true,
+      "description": "Enable/Disable the pgcrypto Extension.  Set to 'Y' to install and enable the extension, set to 'N' otherwise.",
+      "value": "N"
     },
     {
       "name": "IMAGE_NAMESPACE",

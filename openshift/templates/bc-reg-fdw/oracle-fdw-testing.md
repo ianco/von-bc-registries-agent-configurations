@@ -39,7 +39,7 @@ Testing:
 
 Login to the database with your main database user account;
 ```
-psql -UUSER_Rc4u -d BC_REGISTRIES
+psql -U ${POSTGRESQL_USER} -d ${POSTGRESQL_DATABASE}
 ```
 
 Ensure the expected schemas exist
