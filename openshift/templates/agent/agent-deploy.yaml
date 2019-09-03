@@ -318,7 +318,7 @@ parameters:
   value: http://dev.bcovrin.vonx.io/genesis
 - name: LOG_LEVEL
   displayName: Log Level
-  description: The logging level for the agent.
+  description: The logging level for the agent, one of 'debug', 'info', 'warning', 'error', 'critical'
   required: true
   value: WARNING
 # ===============================================================================
