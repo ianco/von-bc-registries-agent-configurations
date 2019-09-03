@@ -126,10 +126,6 @@
                 ],
                 "env": [
                   {
-                    "name": "APPLICATION_URL",
-                    "value": "${APPLICATION_URL}"
-                  },
-                  {
                     "name": "CONFIG_ROOT",
                     "value": "${CONFIG_ROOT}"
                   },
@@ -152,10 +148,6 @@
                   {
                     "name": "PYTHON_ENV",
                     "value": "${PYTHON_ENV}"
-                  },
-                  {
-                    "name": "ENDPOINT_URL",
-                    "value": "${ENDPOINT_URL}"
                   },
                   {
                     "name": "AGENT_ADMIN_URL",
@@ -290,13 +282,6 @@
       "value": "dev"
     },
     {
-      "name": "APPLICATION_URL",
-      "displayName": "Application Url",
-      "description": "The application URL.",
-      "required": true,
-      "value": "https://bc-reg-agent-dev.pathfinder.gov.bc.ca"
-    },
-    {
       "name": "CONFIG_ROOT",
       "displayName": "Config Root",
       "description": "The root directory containing the application configuration.",
@@ -337,13 +322,6 @@
       "description": "Python Environment.",
       "required": true,
       "value": "development"
-    },
-    {
-      "name": "ENDPOINT_URL",
-      "displayName": "Endpoint URL",
-      "description": "The agent's API endpoint.  This URL is registered on the ledger to allow other agents to perform dependency resolution.",
-      "required": true,
-      "value": "https://bc-reg-agent-dev.pathfinder.gov.bc.ca"
     },
     {
       "name": "AGENT_SERVICE_NAME",
