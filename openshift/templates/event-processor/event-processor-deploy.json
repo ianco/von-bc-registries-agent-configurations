@@ -83,7 +83,7 @@
             "imageChangeParams": {
               "automatic": true,
               "containerNames": [
-                "${NAME}"
+                "${NAME}${SUFFIX}"
               ],
               "from": {
                 "kind": "ImageStreamTag",
@@ -352,7 +352,7 @@
       "displayName": "BC Registries Database Host",
       "description": "BC Registries Database Host.",
       "required": true,
-      "value": "bc-reg-fdw"
+      "value": "bc-reg-fdw-indy-cat"
     },
     {
       "name": "BC_REG_DB_PORT",
@@ -373,7 +373,7 @@
       "displayName": "Event Processor Database Host",
       "description": "Event Processor Database Host.",
       "required": true,
-      "value": "event-db"
+      "value": "event-db-indy-cat"
     },
     {
       "name": "EVENT_PROC_DB_PORT",
@@ -394,7 +394,7 @@
       "displayName": "Mara Database Host",
       "description": "Mara Database Host.",
       "required": true,
-      "value": "event-processor-log-db"
+      "value": "event-processor-log-db-indy-cat"
     },
     {
       "name": "MARA_DB_PORT",
@@ -415,7 +415,7 @@
       "displayName": "Start Cron Jobs",
       "description": "Start go-crond and load the cron jobs from the CRON_FOLDER.",
       "required": false,
-      "value": "1"
+      "value": ""
     },
     {
       "name": "WEBHOOK_URL",
