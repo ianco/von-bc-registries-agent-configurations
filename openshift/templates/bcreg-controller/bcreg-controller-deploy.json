@@ -294,7 +294,7 @@
       "displayName": "Application Url",
       "description": "The application URL.",
       "required": true,
-      "value": "https://bcreg-controller-dev.pathfinder.gov.bc.ca"
+      "value": "https://bc-reg-agent-dev.pathfinder.gov.bc.ca"
     },
     {
       "name": "CONFIG_ROOT",
@@ -343,7 +343,7 @@
       "displayName": "Endpoint URL",
       "description": "The agent's API endpoint.  This URL is registered on the ledger to allow other agents to perform dependency resolution.",
       "required": true,
-      "value": "not_used"
+      "value": "https://bc-reg-agent-dev.pathfinder.gov.bc.ca"
     },
     {
       "name": "AGENT_SERVICE_NAME",
