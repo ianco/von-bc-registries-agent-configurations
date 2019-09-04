@@ -90,7 +90,7 @@
             "imageChangeParams": {
               "automatic": true,
               "containerNames": [
-                "${NAME}"
+                "${NAME}${SUFFIX}"
               ],
               "from": {
                 "kind": "ImageStreamTag",
