@@ -43,12 +43,6 @@
             "protocol": "TCP",
             "port": "${{HOST_PORT}}",
             "targetPort": "${{HOST_PORT}}"
-          },
-          {
-            "name": "agent-webhook",
-            "port": "${{AGENT_WEBHOOK_PORT}}",
-            "protocol": "TCP",
-            "targetPort": "${{AGENT_WEBHOOK_PORT}}"
           }
         ],
         "selector": {
@@ -161,10 +155,6 @@
                         "key": "admin-api-key"
                       }
                     }
-                  },
-                  {
-                    "name": "AGENT_WEBHOOK_PORT",
-                    "value": "${AGENT_WEBHOOK_PORT}"
                   },
                   {
                     "name": "TOB_AGENT_ADMIN_URL",
@@ -336,13 +326,6 @@
       "description": "Agent admin port",
       "required": true,
       "value": "8024"
-    },
-    {
-      "name": "AGENT_WEBHOOK_PORT",
-      "displayName": "Agent Webhook Port",
-      "description": "Agent webhook port",
-      "required": true,
-      "value": "8020"
     },
     {
       "name": "CR_AGENT_ADMIN_URL",
