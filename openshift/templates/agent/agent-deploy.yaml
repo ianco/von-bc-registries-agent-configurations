@@ -125,7 +125,7 @@ objects:
             --wallet-storage-type "${WALLET_TYPE}"
             --wallet-storage-config "$(eval echo \"${WALLET_STORAGE_CONFIGURATION}\")"
             --wallet-storage-creds "$(eval echo \"${WALLET_STORAGE_CREDENTIALS}\")"
-            --seed "${INDY_WALLET_SEED}"
+            --seed "${WALLET_SEED}"
             --admin '0.0.0.0' ${ADMIN_INTERFACE_PORT}
             --$([[ ! -z "${AGENT_ADMIN_API_KEY}" ]] && echo "admin-api-key ${AGENT_ADMIN_API_KEY}" || echo "admin-insecure-mode")
             --label "${AGENT_NAME}"
@@ -166,7 +166,7 @@ objects:
               secretKeyRef:
                 name: ${WALLET_CREDENTIAL_STORE_NAME}${SUFFIX}
                 key: key
-          - name: INDY_WALLET_SEED
+          - name: WALLET_SEED
             valueFrom:
               secretKeyRef:
                 name: ${WALLET_CREDENTIAL_STORE_NAME}${SUFFIX}
@@ -279,7 +279,7 @@ parameters:
   displayName: Agent Label/Name
   description: The label/name of the agent
   required: true
-  value: agent
+  value: bcreg-agent
 - name: AGENT_BASE_URL
   displayName: Agent endpoint
   description: The endpoint of the agent
