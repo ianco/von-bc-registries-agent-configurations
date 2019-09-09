@@ -127,8 +127,8 @@
                     "value": "${HOST_PORT}"
                   },
                   {
-                    "name": "VONX_API_URL",
-                    "value": "${VONX_API_URL}"
+                    "name": "CONTROLLER_URL",
+                    "value": "${CONTROLLER_URL}"
                   },
                   {
                     "name": "BC_REG_DB_HOST",
@@ -341,9 +341,9 @@
       "value": "8080"
     },
     {
-      "name": "VONX_API_URL",
-      "displayName": "VON-X API URL",
-      "description": "VON-X API URL.",
+      "name": "CONTROLLER_URL",
+      "displayName": "Controller API URL",
+      "description": "Controler API URL.",
       "required": true,
       "value": "http://bcreg-controller-indy-cat:8080"
     },
