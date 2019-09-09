@@ -224,7 +224,7 @@
           "name": "${NAME}${SUFFIX}"
         },
         "minReplicas": 1,
-        "maxReplicas": 8
+        "maxReplicas": 1
       }
     }
   ],
