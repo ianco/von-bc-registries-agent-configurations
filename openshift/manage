@@ -169,7 +169,7 @@ function resetDatabase() {
   fi
 
   printAndAskToContinue "If you contiune the ${_podName}${resourceSuffix} database will be dropped and recreated.  All data will be lost."
-  # dropAndRecreatePostgreSqlDatabase ${_podName}${resourceSuffix}
+  dropAndRecreatePostgreSqlDatabase ${_podName}${resourceSuffix}
   echoWarning "\nThe ${_podName}${resourceSuffix} database has been dropped and recreated."
 }
 
@@ -194,7 +194,7 @@ function resetEventProcLogDatabase() {
     fi
 
     printAndAskToContinue "If you contiune the ${_dbPodName}${resourceSuffix} database will be dropped and recreated.  All data will be lost."
-    # dropAndRecreateDatabaseWithMigrations "${_eventProcessorPodName}${resourceSuffix}" "${_dbPodName}${resourceSuffix}"
+    dropAndRecreateDatabaseWithMigrations "${_eventProcessorPodName}${resourceSuffix}" "${_dbPodName}${resourceSuffix}"
     echoWarning "\nThe ${_dbPodName}${resourceSuffix} database has been dropped and recreated."
 }
 
@@ -206,7 +206,7 @@ function deleteDatabase() {
   fi
 
   printAndAskToContinue "If you contiune all of the databases on ${_podName}${resourceSuffix} will be deleted.  All data will be lost."
-  # deleteAndRecreateDatabase ${_podName}${resourceSuffix}
+  deleteAndRecreateDatabase ${_podName}${resourceSuffix}
   echoWarning "\nThe databases on ${_podName}${resourceSuffix} have been deleted."
 }
 
@@ -220,8 +220,8 @@ function reset() {
   fi
 
   printAndAskToContinue "If you contiune the ${_dbPodName}${resourceSuffix}, and ${_eventProcessorLogDbPodName}${resourceSuffix} databases will be dropped and recreated.  All data will be lost."
-  # resetEventDatabase ${_dbPodName} ${_eventProcessorPodName}
-  # resetEventProcLogDatabase ${_eventProcessorLogDbPodName} ${_eventProcessorPodName}
+  resetEventDatabase ${_dbPodName} ${_eventProcessorPodName}
+  resetEventProcLogDatabase ${_eventProcessorLogDbPodName} ${_eventProcessorPodName}
   echoWarning "\nThe project's database and indy wallets have been reset."
 }
 
