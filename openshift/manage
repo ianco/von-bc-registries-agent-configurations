@@ -58,6 +58,11 @@ usage () {
       - Get a list of running processes running on a pod.
         Runs 'ps -v' on the pod.
 
+    getDbDiskUsage
+      - Get the disk usage information for a given database pod.
+        For example;
+          $0 -e dev getDbDiskUsage wallet-indy-cat
+
     scaleUp
       - Scale up one or more pods.
         For example;
@@ -367,6 +372,10 @@ case "${_cmd}" in
     ;;
   getrunningprocesses)
     getRunningProcesses ${@}
+    ;;
+  getdbdiskusage)
+    dbPodName=${1}
+    getPostgreSqlDatabaseDiskUsage ${dbPodName}
     ;;
 
   scaleup)
