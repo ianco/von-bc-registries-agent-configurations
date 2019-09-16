@@ -132,18 +132,6 @@
                     "value": "${ENVIRONMENT}"
                   },
                   {
-                    "name": "ENABLE_GUNICORN",
-                    "value": "${ENABLE_GUNICORN}"
-                  },
-                  {
-                    "name": "LOG_LEVEL",
-                    "value": "${LOG_LEVEL}"
-                  },
-                  {
-                    "name": "PYTHON_ENV",
-                    "value": "${PYTHON_ENV}"
-                  },
-                  {
                     "name": "AGENT_ADMIN_URL",
                     "value": "http://${AGENT_SERVICE_NAME}${SUFFIX}:${AGENT_ADMIN_PORT}"
                   },
@@ -291,27 +279,6 @@
       "description": "The application environment.",
       "required": true,
       "value": "default"
-    },
-    {
-      "name": "ENABLE_GUNICORN",
-      "displayName": "Enable gunicorn",
-      "description": "A flag to indicate whether or not to use the gunicorn server.",
-      "required": true,
-      "value": "0"
-    },
-    {
-      "name": "LOG_LEVEL",
-      "displayName": "Log Level",
-      "description": "Log Level.",
-      "required": false,
-      "value": ""
-    },
-    {
-      "name": "PYTHON_ENV",
-      "displayName": "Python Environment",
-      "description": "Python Environment.",
-      "required": true,
-      "value": "development"
     },
     {
       "name": "AGENT_SERVICE_NAME",
