@@ -1,4 +1,3 @@
-    
 package bc;
 
 class baseConfig {
