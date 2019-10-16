@@ -109,7 +109,7 @@
       "displayName": "Git Reference",
       "description": "The git reference or branch.",
       "required": true,
-      "value": "master"
+      "value": "aries-refactoring"
     },
     {
       "name": "SOURCE_CONTEXT_DIR",
