@@ -12,4 +12,7 @@ class baseConfig {
 
   // Instance Suffix
   public static final String  SUFFIX = '-indy-cat'
+
+  // Apps - Listed in the order they should be tagged
+  public static final String[] APPS = ['db', 'bc-reg-fdw', 'agent', 'backup', 'event-processor', 'bcreg-controller']
 }
