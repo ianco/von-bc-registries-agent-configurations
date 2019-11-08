@@ -1,13 +1,13 @@
-def PIPELINE_NAME = "deployment/bc-test"
+def PIPELINE_NAME = "deployment/test"
 
-def LIB_NAME= "orgbook-lib"
-def LIB_REPO = "https://github.com/bcgov/orgbook-configurations.git"
+def LIB_NAME= "bcreg-agent-lib"
+def LIB_REPO = "https://github.com/bcgov/von-bc-registries-agent-configurations.git"
 def LIB_BRANCH = "master"
 library identifier: "${LIB_NAME}@${LIB_BRANCH}", 
         retriever: modernSCM(
           [$class: 'GitSCMSource',
           remote: "${LIB_REPO}",
-          branches: [[name: "*/${LIB_BRANCH}"]]])  
+          branches: [[name: "*/${LIB_BRANCH}"]]])
 
 node {
   def config = load "../workspace@script/jenkins/${PIPELINE_NAME}/config.groovy"
