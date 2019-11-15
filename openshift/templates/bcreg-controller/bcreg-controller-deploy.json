@@ -161,6 +161,18 @@
                         "key": "cr-agent-admin-api-key"
                       }
                     }
+                  },
+                  {
+                    "name": "WEB_CONCURRENCY",
+                    "value": "${WEB_CONCURRENCY}"
+                  },
+                  {
+                    "name": "WORKER_THREADS",
+                    "value": "${WORKER_THREADS}"
+                  },
+                  {
+                    "name": "MAX_CRED_RESPONSE_TIMEOUT",
+                    "value": "${MAX_CRED_RESPONSE_TIMEOUT}"
                   }
                 ],
                 "readinessProbe": {
@@ -211,8 +223,8 @@
           "kind": "DeploymentConfig",
           "name": "${NAME}${SUFFIX}"
         },
-        "minReplicas": 1,
-        "maxReplicas": 1
+        "minReplicas": "${{MIN_REPLICAS}}",
+        "maxReplicas": "${{MAX_REPLICAS}}"
       }
     }
   ],
@@ -307,6 +319,41 @@
       "description": "Credential registry admin api key",
       "required": true,
       "value": ""
+    },
+    {
+      "name": "WEB_CONCURRENCY",
+      "displayName": "Web Concurrency",
+      "description": "Sets the number of worker processes.",
+      "required": true,
+      "value": "1"
+    },
+    {
+      "name": "WORKER_THREADS",
+      "displayName": "Worker Threads",
+      "description": "Sets the maximum number of worker threads.",
+      "required": true,
+      "value": "160"
+    },
+    {
+      "name": "MAX_CRED_RESPONSE_TIMEOUT",
+      "displayName": "Maximum Credential Response Timeout",
+      "description": "Sets the maximum time (in seconds) to wait for a credential response message before giving up.",
+      "required": true,
+      "value": "90"
+    },
+    {
+      "name": "MIN_REPLICAS",
+      "displayName": "Minimum Replicas",
+      "description": "The minimum number of pods to have running.",
+      "required": true,
+      "value": "1"
+    },
+    {
+      "name": "MAX_REPLICAS",
+      "displayName": "Maximum Replicas",
+      "description": "The maximum number of pods to have running.",
+      "required": true,
+      "value": "1"
     },
     {
       "name": "CPU_REQUEST",

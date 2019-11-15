@@ -248,6 +248,18 @@
                   {
                     "name": "NOTIFY_OF_CREDENTIAL_POSTING_ERRORS",
                     "value": "${NOTIFY_OF_CREDENTIAL_POSTING_ERRORS}"
+                  },
+                  {
+                    "name": "MAX_CREDS_REQUESTS",
+                    "value": "${MAX_CREDS_REQUESTS}"
+                  },
+                  {
+                    "name": "CREDS_REQUEST_SIZE",
+                    "value": "${CREDS_REQUEST_SIZE}"
+                  },
+                  {
+                    "name": "CREDS_BATCH_SIZE",
+                    "value": "${CREDS_BATCH_SIZE}"
                   }
                 ],
                 "readinessProbe": {
@@ -451,6 +463,27 @@
       "description": "Use NOTIFY_OF_CREDENTIAL_POSTING_ERRORS to turn error notification on(true)/off(false); off by default.  It's recommended to have this off during bulk data loads as errors in these situations can cause an unnecessary flood of notifications.",
       "required": true,
       "value": "false"
+    },
+    {
+      "name": "MAX_CREDS_REQUESTS",
+      "displayName": "Maximum Credential Requests",
+      "description": "Sets the maximum number of concurrent credential request threads.",
+      "required": true,
+      "value": "80"
+    },
+    {
+      "name": "CREDS_REQUEST_SIZE",
+      "displayName": "Credential Request Size",
+      "description": "Sets the number of credentials each concurrent credential request thread will process.",
+      "required": true,
+      "value": "1"
+    },
+    {
+      "name": "CREDS_BATCH_SIZE",
+      "displayName": "Credential Batch Size",
+      "description": "Sets the maximum number of credentials to fetch and process with each run.",
+      "required": true,
+      "value": "9000"
     },
     {
       "name": "CPU_REQUEST",
