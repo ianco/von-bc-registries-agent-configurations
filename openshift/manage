@@ -54,6 +54,11 @@ usage () {
         Runs the './run-step.sh bcreg/display_pipeline_status.py' pipeline script
         on an instance of a event-processor pod.
 
+    getFailedCredErrors
+      - Gets a summary of the errors encounters during credential posting, a summary of the 
+        error messages reported by getPipelineStatus.
+      - Error messages are grouped together with a count of the occurances, plus a total.
+
     getRunningProcesses
       - Get a list of running processes running on a pod.
         Runs 'ps -v' on the pod.
@@ -405,6 +410,24 @@ function getCredentialPostRate() {
   printf "  - %.0f per minute\n" "${postsPerMinute}"
   echo "  - Over the period of ${elapsedTime}"
 }
+
+function getFailedCredErrors() {
+  _podName=${1}
+  if [ -z "${_podName}" ]; then
+    echoError "\ngetFailedCredErrors; You MUST specify a pod name.\n"
+    exit 1
+  fi
+
+  echo
+  failedCreds=$(runInContainer "${_podName}${resourceSuffix}" \
+    'psql -d ${POSTGRESQL_DATABASE} -t -c "select count(*) from credential_log where process_success = '"'"'N'"'"';"')
+
+  runInContainer \
+    ${_podName}${resourceSuffix} \
+    'psql -d ${POSTGRESQL_DATABASE} -c "select count(*), process_msg from credential_log where process_success = '"'"'N'"'"' group by process_msg;"'
+
+  echo "Total: ${failedCreds}"
+}
 # =================================================================================================================
 
 pushd ${SCRIPT_HOME} >/dev/null
@@ -481,6 +504,10 @@ case "${_cmd}" in
   getconnections)
     dbPodName=${1}
     getConnections "${dbPodName}"
+    ;;
+  getfailedcrederrors)
+    dbPodName=${1:-event-db}
+    getFailedCredErrors "${dbPodName}"
     ;;
 
   scaleup)
