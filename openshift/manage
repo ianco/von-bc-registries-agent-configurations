@@ -241,12 +241,12 @@ function resetEventDatabase() {
 function resetEventProcLogDatabase() {
   (
     local OPTIND
-    unset local quite
+    unset local quiet
     unset local flags
     while getopts q FLAG; do
       case $FLAG in
         q ) 
-          local quite=1
+          local quiet=1
           local flags="-a"
           ;;
       esac
@@ -260,7 +260,7 @@ function resetEventProcLogDatabase() {
       exit 1
     fi
 
-    if [ -z "${quite}" ]; then
+    if [ -z "${quiet}" ]; then
       printAndAskToContinue "If you contiune the ${_dbPodName}${resourceSuffix} database will be dropped and recreated.  All data will be lost."
     fi
 
@@ -656,6 +656,9 @@ case "${_cmd}" in
   getfailedcrederrors)
     dbPodName=${1:-event-db}
     getFailedCredErrors "${dbPodName}"
+    ;;
+  listbuildrefs)
+    listBuildRefs
     ;;
 
   scaleup)
