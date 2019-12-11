@@ -8,6 +8,7 @@ SUFFIX=-indy-cat
 APP_NAME=BcRegistriesAgent
 APP_GROUP=indy-catalyst
 APPLICATION_DOMAIN=bc-reg-agent-dev.pathfinder.gov.bc.ca
+ROUTE_TIMEOUT=120s
 IMAGE_NAMESPACE=devex-von-bc-registries-agent-tools
 TAG_NAME=dev
 AGENT_LABEL_NAME=bcreg-agent
