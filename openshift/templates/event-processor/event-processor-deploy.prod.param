@@ -1,0 +1,36 @@
+#=========================================================
+# OpenShift template parameters for:
+# Component: .
+# Template File: ../openshift/templates/event-processor/event-processor-deploy.json
+#=========================================================
+# NAME=event-processor
+# SUFFIX=-indy-cat
+# APP_NAME=BcRegistriesAgent
+# APP_GROUP=indy-catalyst
+# IMAGE_NAMESPACE=devex-von-bc-registries-agent-tools
+TAG_NAME=prod
+# HOST_NAME=0.0.0.0
+# HOST_PORT=8080
+# CONTROLLER_URL=http://bcreg-controller-indy-cat:8080
+# BC_REG_DB_HOST=bc-reg-fdw-indy-cat
+# BC_REG_DB_PORT=5432
+# BC_REG_DB_DATABASE=BC_REGISTRIES
+# EVENT_PROC_DB_HOST=event-db-indy-cat
+# EVENT_PROC_DB_PORT=5432
+# EVENT_PROC_DB_DATABASE=bc_reg_db
+# MARA_DB_HOST=event-processor-log-db-indy-cat
+# MARA_DB_PORT=5432
+# MARA_DB_DATABASE=mara_db
+# START_CRON=
+# WEBHOOK_URL=
+# WEBHOOK_LEVEL=2
+PROJECT_NAME=devex-von-bc-registries-agent-prod
+FRIENDLY_PROJECT_NAME=BC Registries Agent (prod)
+# NOTIFY_OF_CREDENTIAL_POSTING_ERRORS=false
+# MAX_CREDS_REQUESTS=80
+# CREDS_REQUEST_SIZE=1
+# CREDS_BATCH_SIZE=9000
+# CPU_REQUEST=10m
+# CPU_LIMIT=1500m
+# MEMORY_REQUEST=10Mi
+# MEMORY_LIMIT=2000Mi
