@@ -114,6 +114,13 @@ usage () {
     listBuildRefs
       - Lists build configurations and their git references in a convenient column format.
 
+    initialLoadCreds
+      - Runs the 'bcreg/bc_reg_pipeline_initial_load.py' pipeline on the event-processor container.
+
+    postCreds
+      - Runs the 'bcreg/bc_reg_pipeline_post_credentials.py' pipeline on the event-processor container.
+
+
     scaleUp
       - Scale up one or more pods.
         For example;
@@ -275,7 +282,7 @@ function resetEventProcLogDatabase() {
 function deleteDatabase() {
   _podName=${1}
   if [ -z "${_podName}" ]; then
-    echoError "\deleteDatabase; You MUST specify a pod name.\n"
+    echoError "\ndeleteDatabase; You MUST specify a pod name.\n"
     exit 1
   fi
 
@@ -503,7 +510,7 @@ function getCredentialPostRate() {
   _dbPodName=${2}
   _eventProcessorPodName=${3}
   if [ -z "${_dbPodName}" ] || [ -z "${_eventProcessorPodName}" ]; then
-    echoError "\getCredentialPostRate; You MUST specify the name of the event-db and event-processor pods.\n"
+    echoError "\ngetCredentialPostRate; You MUST specify the name of the event-db and event-processor pods.\n"
     exit 1
   fi
 
@@ -559,6 +566,30 @@ function getFailedCredErrors() {
     'psql -d ${POSTGRESQL_DATABASE} -c "select count(*), process_msg from credential_log where process_success = '"'"'N'"'"' group by process_msg;"'
 
   echo "Total: ${failedCreds}"
+}
+
+function postCreds() {
+  _podName=${1}
+  if [ -z "${_podName}" ]; then
+    echoError "\npostCreds; You MUST specify a pod name.\n"
+    exit 1
+  fi
+
+  runInContainer -v \
+    ${_podName}${resourceSuffix} \
+    'cd scripts && ./run-step.sh bcreg/bc_reg_pipeline_post_credentials.py'
+}
+
+function initialLoadCreds() {
+  _podName=${1}
+  if [ -z "${_podName}" ]; then
+    echoError "\ninitialLoadCreds; You MUST specify a pod name.\n"
+    exit 1
+  fi
+
+  runInContainer -v \
+    ${_podName}${resourceSuffix} \
+    'cd scripts && ./run-step.sh bcreg/bc_reg_pipeline_initial_load.py'
 }
 # =================================================================================================================
 
@@ -662,6 +693,15 @@ case "${_cmd}" in
     ;;
   listbuildrefs)
     listBuildRefs
+    ;;
+  postcreds)
+    eventProcessorPodName=${1:-event-processor}
+    postCreds "${eventProcessorPodName}"
+    ;;
+
+  initialcoadcreds)
+    eventProcessorPodName=${1:-event-processor}
+    initialLoadCreds "${eventProcessorPodName}"
     ;;
 
   scaleup)
