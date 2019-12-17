@@ -40,6 +40,12 @@ usage () {
     resetEventProcLogDatabase
       - Drop and recreate the event processor log database.
 
+    dropDatabase <dbPodName/> [<dbName/>]
+      - Drop a specific database from a pod.
+      
+      <dbPodName/> - The friendly name of the pod.
+      [<dbName/>] - Optional - The name of the database to drop. Defaults to '${POSTGRESQL_DATABASE}'
+
     deleteDatabase
       - Deletes all databases off a pod and recycles the pod leaving it in a clean state.
 
@@ -89,8 +95,26 @@ usage () {
         $0 -e dev getCredentialPostRate
           - Get the average rate since the pipeline was started.
 
-        $0 -e dev getCredentialPostRate 300
-          - Get the average rate over the last 5 minutes.
+        $0 -e dev getCredentialPostRate 600
+          - Get the average rate over the last 10 minutes.
+
+    getCredentialStageRate  [<periodInSeconds/>]
+      - Calculates the rate at which credentials are being staged.
+      - Expects the './run-step.sh bcreg/bc_reg_pipeline_initial_load.py' pipeline to be running.
+      - Calculations are based on the number of credentials that have been staged over the
+        specified period of time.
+
+      periodInSeconds - Optional
+        - Calculates the rate at which credentials were staged over the last number of seconds.
+        - If left blank the period is calculated based on the how long the 
+          './run-step.sh bcreg/bc_reg_pipeline_initial_load.py' has been running.
+
+      Examples:
+        $0 -e dev getCredentialStageRate
+          - Get the average rate since the pipeline was started.
+
+        $0 -e dev getCredentialStageRate 600
+          - Get the average rate over the last 10 minutes.
 
     listDatabases <podName/>
       - List the databases hosted on a given postgresql pod instance.
@@ -550,6 +574,41 @@ function getCredentialPostRate() {
   echo "  - Over the period of ${elapsedTime}"
 }
 
+function getCredentialStageRate() {
+  _periodInSeconds=${1}
+  _dbPodName=${2}
+  _eventProcessorPodName=${3}
+  if [ -z "${_dbPodName}" ] || [ -z "${_eventProcessorPodName}" ]; then
+    echoError "\ngetCredentialStageRate; You MUST specify the name of the event-db and event-processor pods.\n"
+    exit 1
+  fi
+
+  if [ -z ${_periodInSeconds} ]; then
+    runningForSeconds=$(runInContainer "${_eventProcessorPodName}${resourceSuffix}" \
+      "ps a | grep '/bin/sh ./run-step.sh bcreg/bc_reg_pipeline_initial_load.py' | grep -v grep | awk '{print \$1}' | xargs ps -o etimes= -p") 
+  else
+    runningForSeconds=${_periodInSeconds}
+  fi
+
+  startTime=$(TZ='UTC' date -d "now - ${runningForSeconds} seconds" +"%Y-%m-%d %H:%M:%S")
+  credentialsPosted=$(runInContainer "${_dbPodName}${resourceSuffix}" \
+    "psql -d bc_reg_db -t -c \"select count(*) from credential_log where process_success is null AND process_success is null AND entry_date >= '${startTime}';\"")
+
+  if [ ! -z ${runningForSeconds} ]; then
+    # Do floating point math ...
+    postsPerSecond=$(awk "BEGIN {print (${credentialsPosted}/${runningForSeconds})}")
+    postsPerMinute=$(awk "BEGIN {print (${postsPerSecond}*60)}")
+    elapsedTime="$(($runningForSeconds/3600))h:$(($runningForSeconds%3600/60))m:$(($runningForSeconds%60))s"
+  else
+    echo "'/bin/sh ./run-step.sh bcreg/bc_reg_pipeline_initial_load.py' is not currently running on ${_eventProcessorPodName}."
+  fi
+
+  echo -e \\n"Credentials are being staged at an average rate of:"
+  printf "  - %.0f per second, or\n" "${postsPerSecond}"
+  printf "  - %.0f per minute\n" "${postsPerMinute}"
+  echo "  - Over the period of ${elapsedTime}"
+}
+
 function getFailedCredErrors() {
   _podName=${1}
   if [ -z "${_podName}" ]; then
@@ -670,6 +729,12 @@ case "${_cmd}" in
     eventProcessorPodName=${3:-event-processor}
     getCredentialPostRate "${periodInSeconds}" "${dbPodName}" "${eventProcessorPodName}"
     ;;
+  getcredentialstagerate)
+    periodInSeconds=${1}
+    dbPodName=${2:-event-db}
+    eventProcessorPodName=${3:-event-processor}
+    getCredentialStageRate "${periodInSeconds}" "${dbPodName}" "${eventProcessorPodName}"
+    ;;
   listdatabases)
     dbPodName=${1}
     listDatabases "${dbPodName}"
@@ -698,10 +763,14 @@ case "${_cmd}" in
     eventProcessorPodName=${1:-event-processor}
     postCreds "${eventProcessorPodName}"
     ;;
-
   initialcoadcreds)
     eventProcessorPodName=${1:-event-processor}
     initialLoadCreds "${eventProcessorPodName}"
+    ;;
+  dropdatabase)
+    dbPodName=${1}
+    dbName=${2}
+    dropDatabase "${dbPodName}" "${dbName}"
     ;;
 
   scaleup)
