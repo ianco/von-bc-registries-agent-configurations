@@ -1,4 +1,4 @@
-def PIPELINE_NAME = "deployment/test"
+def PIPELINE_NAME = "deployment/prod"
 
 def LIB_NAME= "bcreg-agent-lib"
 def LIB_REPO = "https://github.com/bcgov/von-bc-registries-agent-configurations.git"
