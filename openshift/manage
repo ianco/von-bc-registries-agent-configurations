@@ -42,7 +42,7 @@ usage () {
 
     dropDatabase <dbPodName/> [<dbName/>]
       - Drop a specific database from a pod.
-      
+
       <dbPodName/> - The friendly name of the pod.
       [<dbName/>] - Optional - The name of the database to drop. Defaults to '${POSTGRESQL_DATABASE}'
 
@@ -67,7 +67,7 @@ usage () {
         on an instance of a event-processor pod.
 
     getFailedCredErrors
-      - Gets a summary of the errors encounters during credential posting, a summary of the 
+      - Gets a summary of the errors encounters during credential posting, a summary of the
         error messages reported by getPipelineStatus.
       - Error messages are grouped together with a count of the occurances, plus a total.
 
@@ -88,7 +88,7 @@ usage () {
 
       periodInSeconds - Optional
         - Calculates the rate at which credentials were posted over the last number of seconds.
-        - If left blank the period is calculated based on the how long the 
+        - If left blank the period is calculated based on the how long the
           './run-step.sh bcreg/bc_reg_pipeline_post_credentials.py' has been running.
 
       Examples:
@@ -106,7 +106,7 @@ usage () {
 
       periodInSeconds - Optional
         - Calculates the rate at which credentials were staged over the last number of seconds.
-        - If left blank the period is calculated based on the how long the 
+        - If left blank the period is calculated based on the how long the
           './run-step.sh bcreg/bc_reg_pipeline_initial_load.py' has been running.
 
       Examples:
@@ -144,6 +144,8 @@ usage () {
     postCreds
       - Runs the 'bcreg/bc_reg_pipeline_post_credentials.py' pipeline on the event-processor container.
 
+    removeAgentConnections
+      - Remove all agent connections.
 
     scaleUp
       - Scale up one or more pods.
@@ -279,7 +281,7 @@ function resetEventProcLogDatabase() {
     unset local flags
     while getopts q FLAG; do
       case $FLAG in
-        q ) 
+        q )
           local quiet=1
           local flags="-a"
           ;;
@@ -386,7 +388,7 @@ EOF
     echo -e "\nResetting ${eventProcessorLogDbPod}${resourceSuffix} ..."
     resetEventProcLogDatabase -q "${eventProcessorLogDbPod}" "${eventProcessorPod}"
     exitOnError
-    
+
     # - reset ICIA Wallet Database, by restoring initial copy of ICIA Wallet.
     echo -e "\nResetting ${walletDbPod}${resourceSuffix} ..."
     if isScaledUp ${backupPod}${resourceSuffix}; then
@@ -411,7 +413,7 @@ EOF
     # - verify ICIA Wallet - There should only be 4 items.
     recordCounts=$(getRecordCounts "${walletDbPod}" "${walletDbName}")
     numItems=$(echo "${recordCounts}" | grep items | awk '{print $5}')
-    if (( ${numItems} == 4 )); then
+    if (( ${numItems} >= 4 )); then
       echo "Wallet 'items' count verified; ${numItems} items found."
     else
       echoError "Wallet 'items' count verification failed; ${numItems} items found.  Please fix the issue and try again."
@@ -423,11 +425,19 @@ EOF
     printAndAskToContinue "Please ensure the ICOB reset is complete before you continue."
 
     # - scaleup ICIA agent
-    # - scaleup ICIA controller - Monitor the logs, it may need to be restarted a few times before it will fully sync without error.
-    echo "Scaling up ${agentPod}${resourceSuffix} and ${controllerPod}${resourceSuffix} ..."
-    scaleUp -w "${agentPod}${resourceSuffix}" "${controllerPod}${resourceSuffix}"
+    echo "Scaling up ${agentPod}${resourceSuffix} ..."
+    scaleUp -w "${agentPod}${resourceSuffix}"
     exitOnError
-    printAndAskToContinue "Follow the logs on ${controllerPod}${resourceSuffix} to ensure it has completed registration without error before you continue.\\nIf it does not, you will need to recycle it until it does."
+
+    # - Reset all agent connections ...
+    echo "Resetting agent connections ..."
+    removeAgentConnections "${agentPod}"
+    exitOnError
+
+    # - scaleup ICIA controller
+    echo "Scaling up ${controllerPod}${resourceSuffix} ..."
+    scaleUp -w "${controllerPod}${resourceSuffix}"
+    exitOnError
 
     # - verify ICIA registered with ICOB
     # - Test posting a few credentials using the pipelines
@@ -540,7 +550,7 @@ function getCredentialPostRate() {
 
   if [ -z ${_periodInSeconds} ]; then
     runningForSeconds=$(runInContainer "${_eventProcessorPodName}${resourceSuffix}" \
-      "ps a | grep '/bin/sh ./run-step.sh bcreg/bc_reg_pipeline_post_credentials.py' | grep -v grep | awk '{print \$1}' | xargs ps -o etimes= -p") 
+      "ps a | grep '/bin/sh ./run-step.sh bcreg/bc_reg_pipeline_post_credentials.py' | grep -v grep | awk '{print \$1}' | xargs ps -o etimes= -p")
   else
     runningForSeconds=${_periodInSeconds}
   fi
@@ -585,7 +595,7 @@ function getCredentialStageRate() {
 
   if [ -z ${_periodInSeconds} ]; then
     runningForSeconds=$(runInContainer "${_eventProcessorPodName}${resourceSuffix}" \
-      "ps a | grep '/bin/sh ./run-step.sh bcreg/bc_reg_pipeline_initial_load.py' | grep -v grep | awk '{print \$1}' | xargs ps -o etimes= -p") 
+      "ps a | grep '/bin/sh ./run-step.sh bcreg/bc_reg_pipeline_initial_load.py' | grep -v grep | awk '{print \$1}' | xargs ps -o etimes= -p")
   else
     runningForSeconds=${_periodInSeconds}
   fi
@@ -649,6 +659,30 @@ function initialLoadCreds() {
   runInContainer -v -i \
     ${_podName}${resourceSuffix} \
     'cd scripts && ./run-step.sh bcreg/bc_reg_pipeline_initial_load.py'
+}
+
+function removeAgentConnections(){
+  (
+    _podName=${1}
+    if [ -z "${_podName}" ]; then
+      echoError "\nremoveAgentConnections; You MUST specify a pod name.\n"
+      exit 1
+    fi
+
+    resonse=$(runInContainer \
+      ${_podName}${resourceSuffix} \
+      'curl -s -X GET -H "x-api-key:${AGENT_ADMIN_API_KEY}" http://localhost:8024/connections?alias=tob-agent')
+    connectionIds=$(echo ${resonse} | jq -r '.results[].connection_id')
+    echo
+
+    for connectionId in ${connectionIds}; do
+      echoWarning "Removing connection: ${connectionId}"
+      runInContainer \
+        ${_podName}${resourceSuffix} \
+        "curl -s -o /dev/null -w \" - %{http_code}\n\" -X POST -H \"x-api-key:\${AGENT_ADMIN_API_KEY}\" http://localhost:8024/connections/${connectionId}/remove"
+    done
+    echo
+  )
 }
 # =================================================================================================================
 
@@ -771,6 +805,10 @@ case "${_cmd}" in
     dbPodName=${1}
     dbName=${2}
     dropDatabase "${dbPodName}" "${dbName}"
+    ;;
+  removeagentconnections)
+    agentPodName=${1:-agent}
+    removeAgentConnections "${agentPodName}"
     ;;
 
   scaleup)
