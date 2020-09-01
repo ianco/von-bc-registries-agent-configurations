@@ -68,6 +68,13 @@ usage () {
         Example:
           $0 -e dev requeueOrganization 54321
 
+    queueOrganization <corp_num>
+      - Use with caution.  Queue a specific company that has *not* already been processed.
+        Where:
+          - <corp_num>, is the corp_num from BC Registries for the organization to queue/process.
+        Example:
+          $0 -e dev queueOrganization 54321
+
     getPipelineStatus
       - Get the pipeline status for the given environment.
         Runs the './run-step.sh bcreg/display_pipeline_status.py' pipeline script
@@ -544,6 +551,20 @@ requeueOrganization() {
     "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"update event_by_corp_filing set process_success = null, process_date = null, process_msg = null where corp_num in ('${_corpNum}');\""
 }
 
+queueOrganization() {
+  _corpNum=${1}
+  _podName=${2}
+  if [ -z "${_corpNum}" ] || [ -z "${_podName}" ]; then
+    echo -e \\n"queueOrganization; Missing parameter!"\\n
+    exit 1
+  fi
+
+  # Queue affected event_by_corp_filing records
+  runInContainer -v \
+    ${_podName}${resourceSuffix} \
+    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select system_type_cd, '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing);\""
+}
+
 function getPipelineStatus() {
   _podName=${1}
   if [ -z "${_podName}" ]; then
@@ -781,6 +802,11 @@ case "${_cmd}" in
     corpNum=${1}
     dbPodName=${2:-event-db}
     requeueOrganization "${corpNum}" "${dbPodName}"
+    ;;
+  queueorganization)
+    corpNum=${1}
+    dbPodName=${2:-event-db}
+    queueOrganization "${corpNum}" "${dbPodName}"
     ;;
   getpipelinestatus)
     eventProcessorPodName=${1:-event-processor}
