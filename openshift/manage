@@ -158,6 +158,9 @@ usage () {
     postCreds
       - Runs the 'bcreg/bc_reg_pipeline_post_credentials.py' pipeline on the event-processor container.
 
+    getAgentConnections
+      - List all agent connections.
+
     removeAgentConnections
       - Remove all agent connections.
 
@@ -713,6 +716,21 @@ function initialLoadCreds() {
     'cd scripts && ./run-step.sh bcreg/bc_reg_pipeline_initial_load.py'
 }
 
+function getAgentConnections(){
+  (
+    _podName=${1}
+    if [ -z "${_podName}" ]; then
+      echoError "\ngetAgentConnections; You MUST specify a pod name.\n"
+      exit 1
+    fi
+
+    resonse=$(runInContainer \
+      ${_podName}${resourceSuffix} \
+      'curl -s -X GET -H "x-api-key:${AGENT_ADMIN_API_KEY}" http://localhost:8024/connections')
+    echo "$(echo ${resonse} | jq '.')"
+  )
+}
+
 function removeAgentConnections(){
   (
     _podName=${1}
@@ -721,14 +739,14 @@ function removeAgentConnections(){
       exit 1
     fi
 
-    resonse=$(runInContainer \
-      ${_podName}${resourceSuffix} \
-      'curl -s -X GET -H "x-api-key:${AGENT_ADMIN_API_KEY}" http://localhost:8024/connections?alias=tob-agent')
+    resonse=$(getAgentConnections ${_podName})
     connectionIds=$(echo ${resonse} | jq -r '.results[].connection_id')
     echo
 
     for connectionId in ${connectionIds}; do
-      echoWarning "Removing connection: ${connectionId}"
+      # Trim whitespace
+      connectionId="$(echo -e "${connectionId}" | sed -e 's~^[[:space:]]*~~')"
+      echoWarning "Removing connection: '${connectionId}'"
       runInContainer \
         ${_podName}${resourceSuffix} \
         "curl -s -o /dev/null -w \" - %{http_code}\n\" -X POST -H \"x-api-key:\${AGENT_ADMIN_API_KEY}\" http://localhost:8024/connections/${connectionId}/remove"
@@ -867,6 +885,10 @@ case "${_cmd}" in
     dbPodName=${1}
     dbName=${2}
     dropDatabase "${dbPodName}" "${dbName}"
+    ;;
+  getagentconnections)
+    agentPodName=${1:-agent}
+    getAgentConnections "${agentPodName}"
     ;;
   removeagentconnections)
     agentPodName=${1:-agent}
