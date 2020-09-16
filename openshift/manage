@@ -785,7 +785,7 @@ case "${_cmd}" in
     backupPod=${7:-backup}
     walletDbName=${8:-"agent_indy_cat_wallet"}
     walletDbBackupSpec=${9:-"wallet-indy-cat:5432/${walletDbName}"}
-    walletDbBackupFileFilter=${10:-"/backups/initialized-wallet"}
+    walletDbBackupFileFilter=${10:-"initialized-wallet_2020-09-16_10-56-16.sql.gz"}
     walletDbAdminPasswordKey=${11:-"admin-password"}
 
     reset "${agentPod}" \
