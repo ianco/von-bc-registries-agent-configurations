@@ -1,4 +1,4 @@
-export PROJECT_NAMESPACE="devex-von-bc-registries-agent"
+export PROJECT_NAMESPACE="7cba16"
 export GIT_URI="https://github.com/bcgov/von-bc-registries-agent.git"
 export GIT_REF="master"
 
