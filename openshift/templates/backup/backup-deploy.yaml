@@ -2,57 +2,57 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: "${NAME}${SUFFIX}-deployment-template"
+  name: ${NAME}${SUFFIX}-deployment-template
 objects:
   - kind: PersistentVolumeClaim
     apiVersion: v1
     metadata:
-      name: "${BACKUP_VOLUME_NAME}"
+      name: ${BACKUP_VOLUME_NAME}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         env: ${TAG_NAME}
     spec:
-      storageClassName: "${BACKUP_VOLUME_CLASS}"
+      storageClassName: ${BACKUP_VOLUME_CLASS}
       accessModes:
         - ReadWriteOnce
       resources:
         requests:
-          storage: "${BACKUP_VOLUME_SIZE}"
+          storage: ${BACKUP_VOLUME_SIZE}
   - kind: PersistentVolumeClaim
     apiVersion: v1
     metadata:
-      name: "${VERIFICATION_VOLUME_NAME}"
+      name: ${VERIFICATION_VOLUME_NAME}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         env: ${TAG_NAME}
     spec:
-      storageClassName: "${VERIFICATION_VOLUME_CLASS}"
+      storageClassName: ${VERIFICATION_VOLUME_CLASS}
       accessModes:
         - ReadWriteOnce
       resources:
         requests:
-          storage: "${VERIFICATION_VOLUME_SIZE}"
+          storage: ${VERIFICATION_VOLUME_SIZE}
   - kind: Secret
     apiVersion: v1
     metadata:
-      name: "${NAME}${SUFFIX}"
+      name: ${NAME}${SUFFIX}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         env: ${TAG_NAME}
     stringData:
-      webhook-url: "${WEBHOOK_URL}"
+      webhook-url: ${WEBHOOK_URL}
     type: Opaque
     
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
-      name: "${NAME}${SUFFIX}"
+      name: ${NAME}${SUFFIX}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
@@ -69,17 +69,17 @@ objects:
           imageChangeParams:
             automatic: true
             containerNames:
-              - "${NAME}${SUFFIX}"
+              - ${NAME}${SUFFIX}
             from:
               kind: ImageStreamTag
-              namespace: "${IMAGE_NAMESPACE}"
-              name: "${SOURCE_IMAGE_NAME}:${TAG_NAME}"
+              namespace: ${IMAGE_NAMESPACE}
+              name: ${SOURCE_IMAGE_NAME}:${TAG_NAME}
       replicas: 1
       selector:
-        name: "${NAME}${SUFFIX}"
+        name: ${NAME}${SUFFIX}
       template:
         metadata:
-          name: "${NAME}${SUFFIX}"
+          name: ${NAME}${SUFFIX}
           labels:
             name: ${NAME}${SUFFIX}
             app: ${APP_NAME}${SUFFIX}
@@ -87,79 +87,79 @@ objects:
             env: ${TAG_NAME}
         spec:
           volumes:
-            - name: "${BACKUP_VOLUME_NAME}"
+            - name: ${BACKUP_VOLUME_NAME}
               persistentVolumeClaim:
-                claimName: "${BACKUP_VOLUME_NAME}"
-            - name: "${VERIFICATION_VOLUME_NAME}"
+                claimName: ${BACKUP_VOLUME_NAME}
+            - name: ${VERIFICATION_VOLUME_NAME}
               persistentVolumeClaim:
-                claimName: "${VERIFICATION_VOLUME_NAME}"
-            - name: "${NAME}${SUFFIX}-config-volume"
+                claimName: ${VERIFICATION_VOLUME_NAME}
+            - name: ${NAME}${SUFFIX}-config-volume
               configMap:
-                name: "${CONFIG_MAP_NAME}${SUFFIX}"
+                name: ${CONFIG_MAP_NAME}${SUFFIX}
                 items:
-                  - key: "${CONFIG_FILE_NAME}"
-                    path: "${CONFIG_FILE_NAME}"
+                  - key: ${CONFIG_FILE_NAME}
+                    path: ${CONFIG_FILE_NAME}
           containers:
-            - name: "${NAME}${SUFFIX}"
-              image: ""
+            - name: ${NAME}${SUFFIX}
+              image: 
               ports: []
               env:
                 - name: BACKUP_STRATEGY
-                  value: "${BACKUP_STRATEGY}"
+                  value: ${BACKUP_STRATEGY}
                 - name: BACKUP_DIR
-                  value: "${BACKUP_DIR}"
+                  value: ${BACKUP_DIR}
                 - name: DAILY_BACKUPS
-                  value: "${DAILY_BACKUPS}"
+                  value: ${DAILY_BACKUPS}
                 - name: WEEKLY_BACKUPS
-                  value: "${WEEKLY_BACKUPS}"
+                  value: ${WEEKLY_BACKUPS}
                 - name: MONTHLY_BACKUPS
-                  value: "${MONTHLY_BACKUPS}"
+                  value: ${MONTHLY_BACKUPS}
                 - name: EVENT_DB_INDY_CAT_USER
                   valueFrom:
                     secretKeyRef:
-                      name: "${DATABASE_DEPLOYMENT_NAME}${SUFFIX}"
-                      key: "${DATABASE_USER_KEY_NAME}"
+                      name: ${DATABASE_DEPLOYMENT_NAME}${SUFFIX}
+                      key: ${DATABASE_USER_KEY_NAME}
                 - name: EVENT_DB_INDY_CAT_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: "${DATABASE_DEPLOYMENT_NAME}${SUFFIX}"
-                      key: "${DATABASE_PASSWORD_KEY_NAME}"
+                      name: ${DATABASE_DEPLOYMENT_NAME}${SUFFIX}
+                      key: ${DATABASE_PASSWORD_KEY_NAME}
                 - name: WALLET_INDY_CAT_USER
                   valueFrom:
                     secretKeyRef:
-                      name: "${WALLET_DB_HOST_NAME}${SUFFIX}"
-                      key: "${DATABASE_USER_KEY_NAME}"
+                      name: ${WALLET_DB_HOST_NAME}${SUFFIX}
+                      key: ${DATABASE_USER_KEY_NAME}
                 - name: WALLET_INDY_CAT_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: "${WALLET_DB_HOST_NAME}${SUFFIX}"
-                      key: "${DATABASE_PASSWORD_KEY_NAME}"
+                      name: ${WALLET_DB_HOST_NAME}${SUFFIX}
+                      key: ${DATABASE_PASSWORD_KEY_NAME}
                 - name: WEBHOOK_URL
                   valueFrom:
                     secretKeyRef:
-                      name: "${NAME}${SUFFIX}"
+                      name: ${NAME}${SUFFIX}
                       key: webhook-url
                 - name: ENVIRONMENT_FRIENDLY_NAME
-                  value: "${ENVIRONMENT_FRIENDLY_NAME}"
+                  value: ${ENVIRONMENT_FRIENDLY_NAME}
                 - name: ENVIRONMENT_NAME
-                  value: "${ENVIRONMENT_NAME}"
+                  value: ${ENVIRONMENT_NAME}
                 - name: DATABASE_SERVER_TIMEOUT
-                  value: "${DATABASE_SERVER_TIMEOUT}"
+                  value: ${DATABASE_SERVER_TIMEOUT}
               resources:
                 requests:
-                  cpu: "${CPU_REQUEST}"
-                  memory: "${MEMORY_REQUEST}"
+                  cpu: ${CPU_REQUEST}
+                  memory: ${MEMORY_REQUEST}
                 limits:
-                  cpu: "${CPU_LIMIT}"
-                  memory: "${MEMORY_LIMIT}"
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
               volumeMounts:
-                - name: "${BACKUP_VOLUME_NAME}"
-                  mountPath: "${BACKUP_DIR}"
-                - name: "${VERIFICATION_VOLUME_NAME}"
-                  mountPath: "${VERIFICATION_VOLUME_MOUNT_PATH}"
-                - name: "${NAME}${SUFFIX}-config-volume"
-                  mountPath: "${CONFIG_MOUNT_PATH}${CONFIG_FILE_NAME}"
-                  subPath: "${CONFIG_FILE_NAME}"
+                - name: ${BACKUP_VOLUME_NAME}
+                  mountPath: ${BACKUP_DIR}
+                - name: ${VERIFICATION_VOLUME_NAME}
+                  mountPath: ${VERIFICATION_VOLUME_MOUNT_PATH}
+                - name: ${NAME}${SUFFIX}-config-volume
+                  mountPath: ${CONFIG_MOUNT_PATH}${CONFIG_FILE_NAME}
+                  subPath: ${CONFIG_FILE_NAME}
 parameters:
   - name: NAME
     displayName: Name
@@ -170,7 +170,7 @@ parameters:
     displayName: Suffix
     description: A name suffix used for all objects
     required: false
-    value: "-primary"
+    value: -primary
   - name: APP_NAME
     displayName: App Name
     description: Used to group components together in the OpenShift console.
@@ -237,7 +237,7 @@ parameters:
       The URL of the webhook to use for notifications.  If not specified,
       the webhook integration feature is disabled.
     required: false
-    value: ""
+    value: 
   - name: ENVIRONMENT_FRIENDLY_NAME
     displayName: Friendly Environment Name
     description:
@@ -245,21 +245,21 @@ parameters:
       by the webhook integration to identify the environment in which the backup notifications
       originate.
     required: false
-    value: ""
+    value: 
   - name: ENVIRONMENT_NAME
     displayName: Environment Name (Environment Id)
     description:
       The name or Id of the environment.  This variable is used by the webhook
       integration to identify the environment in which the backup notifications originate.
     required: false
-    value: ""
+    value: 
   - name: BACKUP_DIR
     displayName: The root backup directory
     description:
       The name of the root backup directory.  The backup volume will be mounted
       to this directory.
     required: true
-    value: "/backups/"
+    value: /backups/
   - name: DAILY_BACKUPS
     displayName: Number of Daily Backups to Retain
     description:
@@ -302,7 +302,7 @@ parameters:
     displayName: Config Mount Path
     description: The path to use to mount the config file.
     required: true
-    value: "/"
+    value: /
   - name: BACKUP_VOLUME_NAME
     displayName: Backup Volume Name
     description:
@@ -362,7 +362,7 @@ parameters:
       The path on which to mount the verification volume.  This is used by
       the database server to contain the database configuration and data files.
     required: true
-    value: "/var/lib/pgsql/data"
+    value: /var/lib/pgsql/data
   - name: CPU_REQUEST
     displayName: Resources CPU Request
     description: The resources CPU request (in cores) for this build.

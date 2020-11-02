@@ -2,27 +2,27 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: "${NAME}-deployment-template"
+  name: ${NAME}-deployment-template
   annotations:
     description: Deployment template for a ${NAME} instance.
 objects:
   - kind: Secret
     apiVersion: v1
     metadata:
-      name: "${NAME}${SUFFIX}"
+      name: ${NAME}${SUFFIX}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         env: ${TAG_NAME}
     stringData:
-      cr-agent-admin-api-url: "${CR_AGENT_ADMIN_URL}"
-      cr-agent-admin-api-key: "${CR_ADMIN_API_KEY}"
+      cr-agent-admin-api-url: ${CR_AGENT_ADMIN_URL}
+      cr-agent-admin-api-key: ${CR_ADMIN_API_KEY}
     type: Opaque
   - kind: Service
     apiVersion: v1
     metadata:
-      name: "${NAME}${SUFFIX}"
+      name: ${NAME}${SUFFIX}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
@@ -30,16 +30,16 @@ objects:
         env: ${TAG_NAME}
     spec:
       ports:
-        - name: "${NAME}-http"
+        - name: ${NAME}-http
           protocol: TCP
-          port: "${{HOST_PORT}}"
-          targetPort: "${{HOST_PORT}}"
+          port: ${{HOST_PORT}}
+          targetPort: ${{HOST_PORT}}
       selector:
-        name: "${NAME}${SUFFIX}"
+        name: ${NAME}${SUFFIX}
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
-      name: "${NAME}${SUFFIX}"
+      name: ${NAME}${SUFFIX}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
@@ -62,17 +62,17 @@ objects:
           imageChangeParams:
             automatic: true
             containerNames:
-              - "${NAME}${SUFFIX}"
+              - ${NAME}${SUFFIX}
             from:
               kind: ImageStreamTag
-              namespace: "${IMAGE_NAMESPACE}"
-              name: "${NAME}:${TAG_NAME}"
+              namespace: ${IMAGE_NAMESPACE}
+              name: ${NAME}:${TAG_NAME}
       replicas: 1
       selector:
-        name: "${NAME}${SUFFIX}"
+        name: ${NAME}${SUFFIX}
       template:
         metadata:
-          name: "${NAME}${SUFFIX}"
+          name: ${NAME}${SUFFIX}
           labels:
             name: ${NAME}${SUFFIX}
             app: ${APP_NAME}${SUFFIX}
@@ -80,64 +80,64 @@ objects:
             env: ${TAG_NAME}
         spec:
           containers:
-            - name: "${NAME}${SUFFIX}"
-              image: " "
+            - name: ${NAME}${SUFFIX}
+              image:  
               ports:
-                - containerPort: "${{HOST_PORT}}"
+                - containerPort: ${{HOST_PORT}}
                   protocol: TCP
               env:
                 - name: CONFIG_ROOT
-                  value: "${CONFIG_ROOT}"
+                  value: ${CONFIG_ROOT}
                 - name: HOST_PORT
-                  value: "${HOST_PORT}"
+                  value: ${HOST_PORT}
                 - name: ENVIRONMENT
-                  value: "${ENVIRONMENT}"
+                  value: ${ENVIRONMENT}
                 - name: AGENT_ADMIN_URL
                   value: http://${AGENT_SERVICE_NAME}${SUFFIX}:${AGENT_ADMIN_PORT}
                 - name: AGENT_ADMIN_API_KEY
                   valueFrom:
                     secretKeyRef:
-                      name: "${AGENT_SERVICE_NAME}${SUFFIX}"
+                      name: ${AGENT_SERVICE_NAME}${SUFFIX}
                       key: admin-api-key
                 - name: TOB_AGENT_ADMIN_URL
                   valueFrom:
                     secretKeyRef:
-                      name: "${NAME}${SUFFIX}"
+                      name: ${NAME}${SUFFIX}
                       key: cr-agent-admin-api-url
                 - name: TOB_ADMIN_API_KEY
                   valueFrom:
                     secretKeyRef:
-                      name: "${NAME}${SUFFIX}"
+                      name: ${NAME}${SUFFIX}
                       key: cr-agent-admin-api-key
                 - name: WEB_CONCURRENCY
-                  value: "${WEB_CONCURRENCY}"
+                  value: ${WEB_CONCURRENCY}
                 - name: WORKER_THREADS
-                  value: "${WORKER_THREADS}"
+                  value: ${WORKER_THREADS}
                 - name: MAX_CRED_RESPONSE_TIMEOUT
-                  value: "${MAX_CRED_RESPONSE_TIMEOUT}"
+                  value: ${MAX_CRED_RESPONSE_TIMEOUT}
               readinessProbe:
                 timeoutSeconds: 30
                 initialDelaySeconds: 3
                 httpGet:
-                  path: "/health"
-                  port: "${{HOST_PORT}}"
+                  path: /health
+                  port: ${{HOST_PORT}}
               livenessProbe:
                 timeoutSeconds: 30
                 initialDelaySeconds: 300
                 httpGet:
-                  path: "/health"
-                  port: "${{HOST_PORT}}"
+                  path: /health
+                  port: ${{HOST_PORT}}
               resources:
                 requests:
-                  cpu: "${CPU_REQUEST}"
-                  memory: "${MEMORY_REQUEST}"
+                  cpu: ${CPU_REQUEST}
+                  memory: ${MEMORY_REQUEST}
                 limits:
-                  cpu: "${CPU_LIMIT}"
-                  memory: "${MEMORY_LIMIT}"
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
   - kind: HorizontalPodAutoscaler
     apiVersion: autoscaling/v1
     metadata:
-      name: "${NAME}${SUFFIX}"
+      name: ${NAME}${SUFFIX}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
@@ -146,9 +146,9 @@ objects:
     spec:
       scaleTargetRef:
         kind: DeploymentConfig
-        name: "${NAME}${SUFFIX}"
-      minReplicas: "${{MIN_REPLICAS}}"
-      maxReplicas: "${{MAX_REPLICAS}}"
+        name: ${NAME}${SUFFIX}
+      minReplicas: ${{MIN_REPLICAS}}
+      maxReplicas: ${{MAX_REPLICAS}}
 parameters:
   - name: NAME
     displayName: Name
@@ -159,7 +159,7 @@ parameters:
     displayName: Suffix
     description: A name suffix used for all objects
     required: false
-    value: "-primary"
+    value: -primary
   - name: APP_NAME
     displayName: App Name
     description: Used to group components together in the OpenShift console.
@@ -186,7 +186,7 @@ parameters:
     displayName: Config Root
     description: The root directory containing the application configuration.
     required: true
-    value: "../config"
+    value: ../config
   - name: HOST_PORT
     displayName: Host Port
     description: The port on which the agent service will listen.
@@ -211,12 +211,12 @@ parameters:
     displayName: Credential Registry Admin API Url
     description: Credential registry admin api url
     required: true
-    value: ""
+    value: 
   - name: CR_ADMIN_API_KEY
     displayName: Credential Registry Admin API Key
     description: Credential registry admin api key
     required: true
-    value: ""
+    value: 
   - name: WEB_CONCURRENCY
     displayName: Web Concurrency
     description: Sets the number of worker processes.

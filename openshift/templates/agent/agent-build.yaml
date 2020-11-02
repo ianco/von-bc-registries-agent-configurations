@@ -2,7 +2,7 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: "${NAME}-build-template"
+  name: ${NAME}-build-template
 objects:
 
   - kind: NetworkSecurityPolicy
@@ -24,43 +24,43 @@ objects:
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: "${NAME}"
+      name: ${NAME}
       labels:
-        name: "${NAME}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
+        name: ${NAME}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
 
   - kind: BuildConfig
     apiVersion: v1
     metadata:
-      name: "${NAME}"
+      name: ${NAME}
       labels:
-        name: "${NAME}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
+        name: ${NAME}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
     spec:
       runPolicy: Serial
       source:
         type: Git
         git:
-          ref: "${GIT_REF}"
-          uri: "${GIT_REPO_URL}"
-        contextDir: "${SOURCE_CONTEXT_DIR}"
+          ref: ${GIT_REF}
+          uri: ${GIT_REPO_URL}
+        contextDir: ${SOURCE_CONTEXT_DIR}
       strategy:
         type: Docker
         dockerStrategy:
-          dockerfilePath: "${DOCKER_FILE_PATH}"
+          dockerfilePath: ${DOCKER_FILE_PATH}
       output:
         to:
           kind: ImageStreamTag
-          name: "${NAME}:${OUTPUT_IMAGE_TAG}"
+          name: ${NAME}:${OUTPUT_IMAGE_TAG}
       resources:
         requests:
-          cpu: "${CPU_REQUEST}"
-          memory: "${MEMORY_REQUEST}"
+          cpu: ${CPU_REQUEST}
+          memory: ${MEMORY_REQUEST}
         limits:
-          cpu: "${CPU_LIMIT}"
-          memory: "${MEMORY_LIMIT}"
+          cpu: ${CPU_LIMIT}
+          memory: ${MEMORY_LIMIT}
       triggers:
         - type: ConfigChange
 
@@ -83,7 +83,7 @@ parameters:
     displayName: Suffix
     description: A name suffix used for all objects
     required: false
-    value: "-primary"
+    value: -primary
   - name: APP_NAME
     displayName: App Name
     description: Used to group components together in the OpenShift console.

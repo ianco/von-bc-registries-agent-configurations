@@ -2,26 +2,26 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: "${NAME}-deployment-template"
+  name: ${NAME}-deployment-template
   annotations:
     description: Deployment template for a ${NAME} instance.
 objects:
   - kind: Secret
     apiVersion: v1
     metadata:
-      name: "${NAME}${SUFFIX}"
+      name: ${NAME}${SUFFIX}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         env: ${TAG_NAME}
     stringData:
-      webhook-url: "${WEBHOOK_URL}"
+      webhook-url: ${WEBHOOK_URL}
     type: Opaque
   - kind: Service
     apiVersion: v1
     metadata:
-      name: "${NAME}${SUFFIX}"
+      name: ${NAME}${SUFFIX}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
@@ -34,11 +34,11 @@ objects:
           port: 8080
           targetPort: 8080
       selector:
-        name: "${NAME}${SUFFIX}"
+        name: ${NAME}${SUFFIX}
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
-      name: "${NAME}${SUFFIX}"
+      name: ${NAME}${SUFFIX}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
@@ -61,17 +61,17 @@ objects:
           imageChangeParams:
             automatic: true
             containerNames:
-              - "${NAME}${SUFFIX}"
+              - ${NAME}${SUFFIX}
             from:
               kind: ImageStreamTag
-              namespace: "${IMAGE_NAMESPACE}"
-              name: "${NAME}:${TAG_NAME}"
+              namespace: ${IMAGE_NAMESPACE}
+              name: ${NAME}:${TAG_NAME}
       replicas: 1
       selector:
-        name: "${NAME}${SUFFIX}"
+        name: ${NAME}${SUFFIX}
       template:
         metadata:
-          name: "${NAME}${SUFFIX}"
+          name: ${NAME}${SUFFIX}
           labels:
             name: ${NAME}${SUFFIX}
             app: ${APP_NAME}${SUFFIX}
@@ -79,106 +79,106 @@ objects:
             env: ${TAG_NAME}
         spec:
           containers:
-            - name: "${NAME}${SUFFIX}"
-              image: " "
+            - name: ${NAME}${SUFFIX}
+              image:  
               ports:
                 - containerPort: 8080
                   protocol: TCP
               env:
                 - name: HOST_IP
-                  value: "${HOST_NAME}"
+                  value: ${HOST_NAME}
                 - name: HOST_PORT
-                  value: "${HOST_PORT}"
+                  value: ${HOST_PORT}
                 - name: CONTROLLER_URL
-                  value: "${CONTROLLER_URL}"
+                  value: ${CONTROLLER_URL}
                 - name: BC_REG_DB_HOST
-                  value: "${BC_REG_DB_HOST}"
+                  value: ${BC_REG_DB_HOST}
                 - name: BC_REG_DB_PORT
-                  value: "${BC_REG_DB_PORT}"
+                  value: ${BC_REG_DB_PORT}
                 - name: BC_REG_DB_DATABASE
-                  value: "${BC_REG_DB_DATABASE}"
+                  value: ${BC_REG_DB_DATABASE}
                 - name: BC_REG_DB_USER
                   valueFrom:
                     secretKeyRef:
-                      name: "${BC_REG_DB_HOST}"
+                      name: ${BC_REG_DB_HOST}
                       key: database-user
                 - name: BC_REG_DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: "${BC_REG_DB_HOST}"
+                      name: ${BC_REG_DB_HOST}
                       key: database-password
                 - name: EVENT_PROC_DB_HOST
-                  value: "${EVENT_PROC_DB_HOST}"
+                  value: ${EVENT_PROC_DB_HOST}
                 - name: EVENT_PROC_DB_PORT
-                  value: "${EVENT_PROC_DB_PORT}"
+                  value: ${EVENT_PROC_DB_PORT}
                 - name: EVENT_PROC_DB_DATABASE
-                  value: "${EVENT_PROC_DB_DATABASE}"
+                  value: ${EVENT_PROC_DB_DATABASE}
                 - name: EVENT_PROC_DB_USER
                   valueFrom:
                     secretKeyRef:
-                      name: "${EVENT_PROC_DB_HOST}"
+                      name: ${EVENT_PROC_DB_HOST}
                       key: database-user
                 - name: EVENT_PROC_DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: "${EVENT_PROC_DB_HOST}"
+                      name: ${EVENT_PROC_DB_HOST}
                       key: database-password
                 - name: MARA_DB_HOST
-                  value: "${MARA_DB_HOST}"
+                  value: ${MARA_DB_HOST}
                 - name: MARA_DB_PORT
-                  value: "${MARA_DB_PORT}"
+                  value: ${MARA_DB_PORT}
                 - name: MARA_DB_DATABASE
-                  value: "${MARA_DB_DATABASE}"
+                  value: ${MARA_DB_DATABASE}
                 - name: MARA_DB_USER
                   valueFrom:
                     secretKeyRef:
-                      name: "${MARA_DB_HOST}"
+                      name: ${MARA_DB_HOST}
                       key: database-user
                 - name: MARA_DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: "${MARA_DB_HOST}"
+                      name: ${MARA_DB_HOST}
                       key: database-password
                 - name: START_CRON
-                  value: "${START_CRON}"
+                  value: ${START_CRON}
                 - name: WEBHOOK_URL
                   valueFrom:
                     secretKeyRef:
-                      name: "${NAME}${SUFFIX}"
+                      name: ${NAME}${SUFFIX}
                       key: webhook-url
                 - name: WEBHOOK_LEVEL
-                  value: "${WEBHOOK_LEVEL}"
+                  value: ${WEBHOOK_LEVEL}
                 - name: PROJECT_NAME
-                  value: "${PROJECT_NAME}"
+                  value: ${PROJECT_NAME}
                 - name: FRIENDLY_PROJECT_NAME
-                  value: "${FRIENDLY_PROJECT_NAME}"
+                  value: ${FRIENDLY_PROJECT_NAME}
                 - name: NOTIFY_OF_CREDENTIAL_POSTING_ERRORS
-                  value: "${NOTIFY_OF_CREDENTIAL_POSTING_ERRORS}"
+                  value: ${NOTIFY_OF_CREDENTIAL_POSTING_ERRORS}
                 - name: MAX_CREDS_REQUESTS
-                  value: "${MAX_CREDS_REQUESTS}"
+                  value: ${MAX_CREDS_REQUESTS}
                 - name: CREDS_REQUEST_SIZE
-                  value: "${CREDS_REQUEST_SIZE}"
+                  value: ${CREDS_REQUEST_SIZE}
                 - name: CREDS_BATCH_SIZE
-                  value: "${CREDS_BATCH_SIZE}"
+                  value: ${CREDS_BATCH_SIZE}
               readinessProbe:
                 timeoutSeconds: 30
                 initialDelaySeconds: 3
                 httpGet:
-                  path: "/"
+                  path: /
                   port: 8080
               livenessProbe:
                 timeoutSeconds: 30
                 initialDelaySeconds: 300
                 httpGet:
-                  path: "/"
+                  path: /
                   port: 8080
               resources:
                 requests:
-                  cpu: "${CPU_REQUEST}"
-                  memory: "${MEMORY_REQUEST}"
+                  cpu: ${CPU_REQUEST}
+                  memory: ${MEMORY_REQUEST}
                 limits:
-                  cpu: "${CPU_LIMIT}"
-                  memory: "${MEMORY_LIMIT}"
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
 parameters:
   - name: NAME
     displayName: Name
@@ -189,7 +189,7 @@ parameters:
     displayName: Suffix
     description: A name suffix used for all objects
     required: false
-    value: "-primary"
+    value: -primary
   - name: APP_NAME
     displayName: App Name
     description: Used to group components together in the OpenShift console.
@@ -276,14 +276,14 @@ parameters:
     displayName: Start Cron Jobs
     description: Start go-crond and load the cron jobs from the CRON_FOLDER.
     required: false
-    value: ""
+    value: 
   - name: WEBHOOK_URL
     displayName: Webhook URL
     description:
       The URL of the webhook to use for notifications.  If not specified,
       the webhook integration feature is disabled.
     required: false
-    value: ""
+    value: 
   - name: WEBHOOK_LEVEL
     displayName: Webhook Log Level
     description: The webhook log level filter; 0=Error, 1=Warning, 2=Info

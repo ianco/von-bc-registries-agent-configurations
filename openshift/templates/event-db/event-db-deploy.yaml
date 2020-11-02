@@ -4,13 +4,13 @@ apiVersion: v1
 metadata:
   annotations:
     description: Deployment template for a postgresql server with persistent storage.
-    tags: "${NAME}${SUFFIX}"
-  name: "${NAME}${SUFFIX}-persistent-template"
+    tags: ${NAME}${SUFFIX}
+  name: ${NAME}${SUFFIX}-persistent-template
 objects:
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
-      name: "${NAME}${SUFFIX}"
+      name: ${NAME}${SUFFIX}
       generation: 1
       labels:
         name: ${NAME}${SUFFIX}
@@ -29,19 +29,19 @@ objects:
           imageChangeParams:
             automatic: true
             containerNames:
-              - "${NAME}${SUFFIX}"
+              - ${NAME}${SUFFIX}
             from:
               kind: ImageStreamTag
-              namespace: "${IMAGE_NAMESPACE}"
-              name: "${SOURCE_IMAGE_NAME}:${TAG_NAME}"
+              namespace: ${IMAGE_NAMESPACE}
+              name: ${SOURCE_IMAGE_NAME}:${TAG_NAME}
         - type: ConfigChange
       replicas: 1
       test: false
       selector:
-        name: "${NAME}${SUFFIX}"
+        name: ${NAME}${SUFFIX}
       template:
         metadata:
-          name: "${NAME}${SUFFIX}"
+          name: ${NAME}${SUFFIX}
           labels:
             name: ${NAME}${SUFFIX}
             app: ${APP_NAME}${SUFFIX}
@@ -49,12 +49,12 @@ objects:
             env: ${TAG_NAME}
         spec:
           volumes:
-            - name: "${NAME}${SUFFIX}-data"
+            - name: ${NAME}${SUFFIX}-data
               persistentVolumeClaim:
-                claimName: "${NAME}${SUFFIX}"
+                claimName: ${NAME}${SUFFIX}
           containers:
-            - name: "${NAME}${SUFFIX}"
-              image: " "
+            - name: ${NAME}${SUFFIX}
+              image:  
               ports:
                 - containerPort: 5432
                   protocol: TCP
@@ -62,30 +62,30 @@ objects:
                 - name: POSTGRESQL_USER
                   valueFrom:
                     secretKeyRef:
-                      name: "${NAME}${SUFFIX}"
+                      name: ${NAME}${SUFFIX}
                       key: database-user
                 - name: POSTGRESQL_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: "${NAME}${SUFFIX}"
+                      name: ${NAME}${SUFFIX}
                       key: database-password
                 - name: POSTGRESQL_ADMIN_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: "${NAME}${SUFFIX}"
+                      name: ${NAME}${SUFFIX}
                       key: admin-password
                 - name: POSTGRESQL_DATABASE
-                  value: "${POSTGRESQL_DATABASE_NAME}"
+                  value: ${POSTGRESQL_DATABASE_NAME}
               resources:
                 requests:
-                  cpu: "${CPU_REQUEST}"
-                  memory: "${MEMORY_REQUEST}"
+                  cpu: ${CPU_REQUEST}
+                  memory: ${MEMORY_REQUEST}
                 limits:
-                  cpu: "${CPU_LIMIT}"
-                  memory: "${MEMORY_LIMIT}"
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
               volumeMounts:
-                - name: "${NAME}${SUFFIX}-data"
-                  mountPath: "${MOUNT_PATH}"
+                - name: ${NAME}${SUFFIX}-data
+                  mountPath: ${MOUNT_PATH}
               livenessProbe:
                 tcpSocket:
                   port: 5432
@@ -97,9 +97,9 @@ objects:
               readinessProbe:
                 exec:
                   command:
-                    - "/bin/sh"
-                    - "-i"
-                    - "-c"
+                    - /bin/sh
+                    - -i
+                    - -c
                     - psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d $POSTGRESQL_DATABASE -c
                       'SELECT 1'
                 initialDelaySeconds: 5
@@ -107,7 +107,7 @@ objects:
                 periodSeconds: 10
                 successThreshold: 1
                 failureThreshold: 3
-              terminationMessagePath: "/dev/termination-log"
+              terminationMessagePath: /dev/termination-log
               terminationMessagePolicy: File
               imagePullPolicy: IfNotPresent
               securityContext:
@@ -121,44 +121,44 @@ objects:
   - kind: PersistentVolumeClaim
     apiVersion: v1
     metadata:
-      name: "${NAME}${SUFFIX}"
+      name: ${NAME}${SUFFIX}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         env: ${TAG_NAME}
     spec:
-      storageClassName: "${PERSISTENT_VOLUME_CLASS}"
+      storageClassName: ${PERSISTENT_VOLUME_CLASS}
       accessModes:
         - ReadWriteOnce
       resources:
         requests:
-          storage: "${PERSISTENT_VOLUME_SIZE}"
+          storage: ${PERSISTENT_VOLUME_SIZE}
   - kind: Secret
     apiVersion: v1
     metadata:
-      name: "${NAME}${SUFFIX}"
+      name: ${NAME}${SUFFIX}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         env: ${TAG_NAME}
     stringData:
-      admin-password: "${POSTGRESQL_ADMIN_PASSWORD}"
-      database-password: "${POSTGRESQL_PASSWORD}"
-      database-user: "${POSTGRESQL_USER}"
+      admin-password: ${POSTGRESQL_ADMIN_PASSWORD}
+      database-password: ${POSTGRESQL_PASSWORD}
+      database-user: ${POSTGRESQL_USER}
     type: Opaque
   - kind: Service
     apiVersion: v1
     metadata:
-      name: "${NAME}${SUFFIX}"
+      name: ${NAME}${SUFFIX}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         env: ${TAG_NAME}
       annotations:
-        template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
+        template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name==postgresql)].port}
     spec:
       ports:
         - name: postgresql
@@ -166,7 +166,7 @@ objects:
           port: 5432
           targetPort: 5432
       selector:
-        name: "${NAME}${SUFFIX}"
+        name: ${NAME}${SUFFIX}
       type: ClusterIP
       sessionAffinity: None
 parameters:
@@ -181,7 +181,7 @@ parameters:
     displayName: Suffix
     description: A name suffix used for all objects
     required: false
-    value: "-primary"
+    value: -primary
   - name: APP_NAME
     displayName: App Name
     description: Used to group components together in the OpenShift console.
@@ -240,7 +240,7 @@ parameters:
     displayName: Mount Path
     description: The path to mount the persistent volume.
     required: true
-    value: "/var/lib/pgsql/data"
+    value: /var/lib/pgsql/data
   - name: PERSISTENT_VOLUME_SIZE
     displayName: Persistent Volume Size
     description: The size of the persistent volume , e.g. 512Mi, 1Gi, 2Gi.

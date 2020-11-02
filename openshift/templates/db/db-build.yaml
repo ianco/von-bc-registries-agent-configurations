@@ -2,24 +2,24 @@
 kind: Template
 apiVersion: v1
 metadata:
-    name: "${NAME}-build-template"
+    name: ${NAME}-build-template
 objects:
     - apiVersion: v1
       kind: ImageStream
       metadata:
-          name: "${NAME}"
+          name: ${NAME}
           labels:
-              name: "${NAME}"
-              app: "${APP_NAME}${SUFFIX}"
-              app-group: "${APP_GROUP}"
+              name: ${NAME}
+              app: ${APP_NAME}${SUFFIX}
+              app-group: ${APP_GROUP}
     - kind: BuildConfig
       apiVersion: v1
       metadata:
-          name: "${NAME}"
+          name: ${NAME}
           labels:
-              name: "${NAME}"
-              app: "${APP_NAME}${SUFFIX}"
-              app-group: "${APP_GROUP}"
+              name: ${NAME}
+              app: ${APP_NAME}${SUFFIX}
+              app-group: ${APP_GROUP}
       spec:
           triggers:
               - type: ConfigChange
@@ -29,19 +29,19 @@ objects:
           source:
               type: Git
               git:
-                  uri: "${GIT_REPO_URL}"
-                  ref: "${GIT_REF}"
-              contextDir: "${SOURCE_CONTEXT_DIR}"
+                  uri: ${GIT_REPO_URL}
+                  ref: ${GIT_REF}
+              contextDir: ${SOURCE_CONTEXT_DIR}
           strategy:
               type: Source
               sourceStrategy:
                   from:
-                      kind: "${SOURCE_IMAGE_KIND}"
-                      name: "${SOURCE_IMAGE_NAME}:${SOURCE_IMAGE_TAG}"
+                      kind: ${SOURCE_IMAGE_KIND}
+                      name: ${SOURCE_IMAGE_NAME}:${SOURCE_IMAGE_TAG}
           output:
               to:
                   kind: ImageStreamTag
-                  name: "${NAME}:${OUTPUT_IMAGE_TAG}"
+                  name: ${NAME}:${OUTPUT_IMAGE_TAG}
 parameters:
     - name: NAME
       displayName: Name
@@ -52,7 +52,7 @@ parameters:
       displayName: Suffix
       description: A name suffix used for all objects
       required: false
-      value: "-primary"
+      value: -primary
     - name: APP_NAME
       displayName: App Name
       description: Used to group components together in the OpenShift console.
