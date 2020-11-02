@@ -6,6 +6,7 @@ metadata:
 objects:
 
   - kind: NetworkSecurityPolicy
+    apiVersion: security.devops.gov.bc.ca/v1alpha1
     metadata:
       name: pods-to-k8s-api${SUFFIX}
       labels:
