@@ -21,7 +21,7 @@
 # FDW_PASS=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 # POSTGIS_EXTENSION='N'
 # PGCRYPTO_EXTENSION='N'
-# IMAGE_NAMESPACE=devex-von-bc-registries-agent-tools
+# IMAGE_NAMESPACE=7cba16-tools
 # SOURCE_IMAGE_NAME=bc-reg-fdw
 TAG_NAME=dev
 # MOUNT_PATH=/var/lib/pgsql/data

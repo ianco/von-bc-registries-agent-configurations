@@ -206,7 +206,7 @@ parameters:
     description:
       The namespace of the OpenShift project containing the imagestream for
       the application.
-    value: devex-von-bc-registries-agent-tools
+    value: 7cba16-tools
   - name: TAG_NAME
     displayName: Environment TAG name
     description: The TAG name for this environment, e.g., dev, test, prod
@@ -295,7 +295,7 @@ parameters:
       The name or Id of the project.  This variable is used by the webhook
       integration to identify the project in which the backup notifications originate.
     required: false
-    value: devex-von-bc-registries-agent-dev
+    value: 7cba16-dev
   - name: FRIENDLY_PROJECT_NAME
     displayName: Friendly Project Name
     description:

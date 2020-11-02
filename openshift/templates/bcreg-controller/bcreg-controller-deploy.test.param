@@ -7,7 +7,7 @@
 # SUFFIX=-primary
 # APP_NAME=BcRegistriesAgent
 # APP_GROUP=primary-instance
-# IMAGE_NAMESPACE=devex-von-bc-registries-agent-tools
+# IMAGE_NAMESPACE=7cba16-tools
 TAG_NAME=test
 # CONFIG_ROOT=../config
 # HOST_PORT=8080

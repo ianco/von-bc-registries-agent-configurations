@@ -7,7 +7,7 @@
 # SUFFIX=-primary
 # APP_NAME=BcRegistriesAgent
 # APP_GROUP=primary-instance
-# IMAGE_NAMESPACE=devex-von-bc-registries-agent-tools
+# IMAGE_NAMESPACE=7cba16-tools
 # SOURCE_IMAGE_NAME=db
 TAG_NAME=dev
 # POSTGRESQL_DATABASE_NAME=bc_reg_db
