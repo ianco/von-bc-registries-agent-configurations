@@ -335,7 +335,7 @@ parameters:
     displayName: Application Hostname
     description: The exposed hostname that will route to the service, if left blank a value will be defaulted.
     required: false
-    value: bc-reg-agent-dev.orgbook.gov.bc.ca
+    value: bc-reg-agent-primary-dev.apps.silver.devops.gov.bc.ca
   - name: ROUTE_TIMEOUT
     displayName: Route Timeout
     description: The timeout for the application route.  When this timeout is exceeded the application's route will respond with a 504 Gateway Timeout error.

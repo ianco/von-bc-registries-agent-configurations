@@ -220,7 +220,7 @@ parameters:
     description:
       The exposed hostname that will route to the service, if left blank
       a value will be defaulted.
-    value: schema-spy-oracle-primary-dev.pathfinder.gov.bc.ca
+    value: schema-spy-oracle-primary-dev.apps.silver.devops.gov.bc.ca
   - name: OUTPUT_PATH
     displayName: Output Path
     required: true
