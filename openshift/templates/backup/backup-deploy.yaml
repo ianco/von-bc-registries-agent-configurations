@@ -9,10 +9,10 @@ objects:
     metadata:
       name: "${BACKUP_VOLUME_NAME}"
       labels:
-        name: "${NAME}${SUFFIX}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
-        template: "${NAME}${SUFFIX}-template"
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     spec:
       storageClassName: "${BACKUP_VOLUME_CLASS}"
       accessModes:
@@ -25,10 +25,10 @@ objects:
     metadata:
       name: "${VERIFICATION_VOLUME_NAME}"
       labels:
-        name: "${NAME}${SUFFIX}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
-        template: "${NAME}${SUFFIX}-template"
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     spec:
       storageClassName: "${VERIFICATION_VOLUME_CLASS}"
       accessModes:
@@ -41,21 +41,23 @@ objects:
     metadata:
       name: "${NAME}${SUFFIX}"
       labels:
-        name: "${NAME}${SUFFIX}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     stringData:
       webhook-url: "${WEBHOOK_URL}"
     type: Opaque
+    
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
       name: "${NAME}${SUFFIX}"
       labels:
-        name: "${NAME}${SUFFIX}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
-        template: "${NAME}${SUFFIX}-template"
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
       annotations:
         description: Defines how to deploy the ${NAME}${SUFFIX} server
     spec:
@@ -79,10 +81,10 @@ objects:
         metadata:
           name: "${NAME}${SUFFIX}"
           labels:
-            name: "${NAME}${SUFFIX}"
-            app: "${APP_NAME}${SUFFIX}"
-            app-group: "${APP_GROUP}"
-            template: "${NAME}${SUFFIX}-template"
+            name: ${NAME}${SUFFIX}
+            app: ${APP_NAME}${SUFFIX}
+            app-group: ${APP_GROUP}
+            env: ${TAG_NAME}
         spec:
           volumes:
             - name: "${BACKUP_VOLUME_NAME}"

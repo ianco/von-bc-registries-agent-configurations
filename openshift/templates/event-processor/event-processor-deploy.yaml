@@ -11,9 +11,10 @@ objects:
     metadata:
       name: "${NAME}${SUFFIX}"
       labels:
-        name: "${NAME}${SUFFIX}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     stringData:
       webhook-url: "${WEBHOOK_URL}"
     type: Opaque
@@ -22,9 +23,10 @@ objects:
     metadata:
       name: "${NAME}${SUFFIX}"
       labels:
-        name: "${NAME}${SUFFIX}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     spec:
       ports:
         - name: 8080-tcp
@@ -38,9 +40,10 @@ objects:
     metadata:
       name: "${NAME}${SUFFIX}"
       labels:
-        name: "${NAME}${SUFFIX}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
       annotations:
         description: Defines how to deploy the container.
     spec:
@@ -70,9 +73,10 @@ objects:
         metadata:
           name: "${NAME}${SUFFIX}"
           labels:
-            name: "${NAME}${SUFFIX}"
-            app: "${APP_NAME}${SUFFIX}"
-            app-group: "${APP_GROUP}"
+            name: ${NAME}${SUFFIX}
+            app: ${APP_NAME}${SUFFIX}
+            app-group: ${APP_GROUP}
+            env: ${TAG_NAME}
         spec:
           containers:
             - name: "${NAME}${SUFFIX}"

@@ -13,10 +13,10 @@ objects:
       name: "${NAME}${SUFFIX}"
       generation: 1
       labels:
-        name: "${NAME}${SUFFIX}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
-        template: "${NAME}${SUFFIX}-persistent-template"
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     spec:
       strategy:
         type: Recreate
@@ -41,10 +41,12 @@ objects:
         name: "${NAME}${SUFFIX}"
       template:
         metadata:
+          name: "${NAME}${SUFFIX}"
           labels:
-            name: "${NAME}${SUFFIX}"
-            app: "${APP_NAME}${SUFFIX}"
-            app-group: "${APP_GROUP}"
+            name: ${NAME}${SUFFIX}
+            app: ${APP_NAME}${SUFFIX}
+            app-group: ${APP_GROUP}
+            env: ${TAG_NAME}
         spec:
           volumes:
             - name: "${NAME}${SUFFIX}-data"
@@ -121,10 +123,10 @@ objects:
     metadata:
       name: "${NAME}${SUFFIX}"
       labels:
-        name: "${NAME}${SUFFIX}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
-        template: "${NAME}${SUFFIX}-persistent-template"
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     spec:
       storageClassName: "${PERSISTENT_VOLUME_CLASS}"
       accessModes:
@@ -137,9 +139,10 @@ objects:
     metadata:
       name: "${NAME}${SUFFIX}"
       labels:
-        name: "${NAME}${SUFFIX}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     stringData:
       admin-password: "${POSTGRESQL_ADMIN_PASSWORD}"
       database-password: "${POSTGRESQL_PASSWORD}"
@@ -150,10 +153,10 @@ objects:
     metadata:
       name: "${NAME}${SUFFIX}"
       labels:
-        name: "${NAME}${SUFFIX}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
-        template: "${NAME}${SUFFIX}-persistent-template"
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
       annotations:
         template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
     spec:

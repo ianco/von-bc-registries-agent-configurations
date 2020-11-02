@@ -4,6 +4,25 @@ apiVersion: v1
 metadata:
   name: ${NAME}${SUFFIX}
 objects:
+
+  - kind: NetworkSecurityPolicy
+    apiVersion: secops.pathfinder.gov.bc.ca/v1alpha1
+    metadata:
+      name: pods-to-k8s-api${SUFFIX}
+      labels:
+        name: pods-to-k8s-api${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
+    spec:
+      description: |
+        Allow pods to talk to the internal k8s api so deployments work.
+        This only needs to be specified once per environment.
+      source:
+        - - $namespace=${NAMESPACE}-${TAG_NAME}
+      destination:
+        - - int:network=internal-cluster-api-endpoint
+
   - kind: Service
     apiVersion: v1
     metadata:
@@ -12,6 +31,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     spec:
       ports:
         - name: ${NAME}-admin
@@ -37,6 +57,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
       annotations:
         haproxy.router.openshift.io/timeout: ${ROUTE_TIMEOUT}
     spec:
@@ -59,6 +80,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     stringData:
       key: ${WALLET_KEY}
       seed: ${AGENT_WALLET_SEED}
@@ -73,6 +95,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     stringData:
       admin-api-key: ${ADMIN_API_KEY}
     type: Opaque
@@ -85,6 +108,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     spec:
       replicas: 1
       selector:
@@ -98,6 +122,7 @@ objects:
             name: ${NAME}${SUFFIX}
             app: ${APP_NAME}${SUFFIX}
             app-group: ${APP_GROUP}
+            env: ${TAG_NAME}
         spec:
           containers:
             - name: ${NAME}${SUFFIX}
@@ -274,6 +299,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     spec:
       scaleTargetRef:
         kind: DeploymentConfig
@@ -287,6 +313,10 @@ parameters:
     description: The name assigned to all the objects defined in this template.
     required: true
     value: agent
+  - name: NAMESPACE
+    displayName: The target namespace for the resources.
+    required: true
+    value: 7cba16    
   - name: SUFFIX
     displayName: Suffix
     description: A name suffix used for all objects.

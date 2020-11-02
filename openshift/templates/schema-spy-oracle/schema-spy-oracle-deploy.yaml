@@ -12,9 +12,10 @@ objects:
     metadata:
       name: "${NAME}${SUFFIX}"
       labels:
-        name: "${NAME}${SUFFIX}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     stringData:
       password: "${SCHEMASPY_PASSWORD}"
       user: "${SCHEMASPY_USER}"
@@ -24,9 +25,10 @@ objects:
     metadata:
       name: "${NAME}${SUFFIX}"
       labels:
-        name: "${NAME}${SUFFIX}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
       annotations:
         description: Exposes and load balances the application pods
     spec:
@@ -42,9 +44,10 @@ objects:
     metadata:
       name: "${NAME}${SUFFIX}"
       labels:
-        name: "${NAME}${SUFFIX}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     spec:
       host: "${APPLICATION_DOMAIN}"
       tls:
@@ -60,9 +63,10 @@ objects:
       annotations:
         description: Defines how to deploy the container.
       labels:
-        name: "${NAME}${SUFFIX}"
-        app: "${APP_NAME}${SUFFIX}"
-        app-group: "${APP_GROUP}"
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
     spec:
       strategy:
         type: Recreate
@@ -88,9 +92,10 @@ objects:
         metadata:
           name: "${NAME}${SUFFIX}"
           labels:
-            name: "${NAME}${SUFFIX}"
-            app: "${APP_NAME}${SUFFIX}"
-            app-group: "${APP_GROUP}"
+            name: ${NAME}${SUFFIX}
+            app: ${APP_NAME}${SUFFIX}
+            app-group: ${APP_GROUP}
+            env: ${TAG_NAME}
         spec:
           containers:
             - name: "${NAME}${SUFFIX}"
