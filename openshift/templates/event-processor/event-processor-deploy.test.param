@@ -4,21 +4,21 @@
 # Template File: ../openshift/templates/event-processor/event-processor-deploy.json
 #=========================================================
 # NAME=event-processor
-# SUFFIX=-indy-cat
+# SUFFIX=-primary
 # APP_NAME=BcRegistriesAgent
-# APP_GROUP=indy-catalyst
+# APP_GROUP=primary-instance
 # IMAGE_NAMESPACE=devex-von-bc-registries-agent-tools
 TAG_NAME=test
 # HOST_NAME=0.0.0.0
 # HOST_PORT=8080
-# CONTROLLER_URL=http://bcreg-controller-indy-cat:8080
-# BC_REG_DB_HOST=bc-reg-fdw-indy-cat
+# CONTROLLER_URL=http://bcreg-controller-primary:8080
+# BC_REG_DB_HOST=bc-reg-fdw-primary
 # BC_REG_DB_PORT=5432
 # BC_REG_DB_DATABASE=BC_REGISTRIES
-# EVENT_PROC_DB_HOST=event-db-indy-cat
+# EVENT_PROC_DB_HOST=event-db-primary
 # EVENT_PROC_DB_PORT=5432
 # EVENT_PROC_DB_DATABASE=bc_reg_db
-# MARA_DB_HOST=event-processor-log-db-indy-cat
+# MARA_DB_HOST=event-processor-log-db-primary
 # MARA_DB_PORT=5432
 # MARA_DB_DATABASE=mara_db
 # START_CRON=

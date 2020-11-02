@@ -4,9 +4,9 @@
 # Template File: ../openshift/templates/event-db/event-db-deploy.json
 #=========================================================
 # NAME=event-db
-# SUFFIX=-indy-cat
+# SUFFIX=-primary
 # APP_NAME=BcRegistriesAgent
-# APP_GROUP=indy-catalyst
+# APP_GROUP=primary-instance
 # IMAGE_NAMESPACE=devex-von-bc-registries-agent-tools
 # SOURCE_IMAGE_NAME=db
 TAG_NAME=dev

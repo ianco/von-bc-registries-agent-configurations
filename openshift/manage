@@ -92,7 +92,7 @@ usage () {
     getDbDiskUsage <podName/>
       - Get the disk usage information for a given database pod.
         For example;
-          $0 -e dev getDbDiskUsage wallet-indy-cat
+          $0 -e dev getDbDiskUsage wallet-primary
 
     getCredentialPostRate [<periodInSeconds/>]
       - Calculates the rate at which credentials are being posted.
@@ -185,7 +185,7 @@ EOF
 # -----------------------------------------------------------------------------------------------------------------
 # Defaults:
 # -----------------------------------------------------------------------------------------------------------------
-resourceSuffix="${resourceSuffix:--indy-cat}"
+resourceSuffix="${resourceSuffix:--primary}"
 # -----------------------------------------------------------------------------------------------------------------
 
 # =================================================================================================================
@@ -344,7 +344,7 @@ function reset() {
     walletDbPod=${6}
     backupPod=${7}
     walletDbName=${8} # Example; agent_indy_cat_wallet
-    walletDbBackupSpec=${9} # Example; "wallet-indy-cat:5432/${walletDbName}"
+    walletDbBackupSpec=${9} # Example; "wallet-primary:5432/${walletDbName}"
     walletDbBackupFileFilter=${10} # Example; /backups/initialized-wallet
     walletDbAdminPasswordKey=${11}
     targetNamespace=$(getProjectName)
@@ -792,7 +792,7 @@ case "${_cmd}" in
     walletDbPod=${6:-wallet}
     backupPod=${7:-backup}
     walletDbName=${8:-"agent_indy_cat_wallet"}
-    walletDbBackupSpec=${9:-"wallet-indy-cat:5432/${walletDbName}"}
+    walletDbBackupSpec=${9:-"wallet-primary:5432/${walletDbName}"}
     walletDbBackupFileFilter=${10:-"initialized-wallet"}
     walletDbAdminPasswordKey=${11:-"admin-password"}
 

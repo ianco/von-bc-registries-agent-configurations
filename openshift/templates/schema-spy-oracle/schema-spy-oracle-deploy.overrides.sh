@@ -13,7 +13,7 @@ fi
 #
 # The generated config map is used to update the Caddy configuration
 # ========================================================================
-CONFIG_MAP_NAME=schema-spy-oracle-caddy-conf-indy-cat
+CONFIG_MAP_NAME=schema-spy-oracle-caddy-conf-primary
 SOURCE_FILE=$( dirname "$0" )/Caddyfile
 OUTPUT_FORMAT=json
 OUTPUT_FILE=${CONFIG_MAP_NAME}-configmap_DeploymentConfig.json

@@ -206,7 +206,7 @@ parameters:
     displayName: Suffix
     description: A name suffix used for all objects
     required: false
-    value: "-indy-cat"
+    value: "-primary"
   - name: APP_NAME
     displayName: App Name
     description: Used to group components together in the OpenShift console.
@@ -216,7 +216,7 @@ parameters:
     displayName: App Group
     description: The name assigned to all of the deployments in this project.
     required: true
-    value: indy-catalyst
+    value: primary-instance
   - name: POSTGRESQL_DATABASE_NAME
     displayName: PostgreSQL Database Name
     description: The name of the PostgreSQL database.
@@ -292,14 +292,14 @@ parameters:
     description:
       Enable/Disable the PostGIS Extension.  Set to 'Y' to install and enable
       the extension, set to 'N' otherwise.
-    value: N
+    value: 'N'
   - name: PGCRYPTO_EXTENSION
     displayName: Enable pgcrypto Extension
     required: true
     description:
       Enable/Disable the pgcrypto Extension.  Set to 'Y' to install and enable
       the extension, set to 'N' otherwise.
-    value: N
+    value: 'N'
   - name: IMAGE_NAMESPACE
     displayName: Image Namespace
     required: true

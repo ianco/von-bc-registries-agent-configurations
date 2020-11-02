@@ -4,9 +4,9 @@
 # Template File: ../openshift/templates/backup/backup-build.json
 #=========================================================
 NAME=backup
-SUFFIX=-indy-cat
+SUFFIX=-primary
 APP_NAME=BcRegistriesAgent
-APP_GROUP=indy-catalyst
+APP_GROUP=primary-instance
 GIT_REPO_URL=https://github.com/BCDevOps/backup-container.git
 GIT_REF=2.0.1
 SOURCE_CONTEXT_DIR=/docker

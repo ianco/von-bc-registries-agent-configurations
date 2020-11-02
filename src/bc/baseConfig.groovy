@@ -11,7 +11,7 @@ class baseConfig {
   public static final String  NAME_SPACE = 'devex-von-bc-registries-agent'
 
   // Instance Suffix
-  public static final String  SUFFIX = '-indy-cat'
+  public static final String  SUFFIX = '-primary'
 
   // Apps - Listed in the order they should be tagged
   public static final String[] APPS = ['db', 'bc-reg-fdw', 'agent', 'backup', 'event-processor', 'bcreg-controller']

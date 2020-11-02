@@ -291,7 +291,7 @@ parameters:
     displayName: Suffix
     description: A name suffix used for all objects.
     required: false
-    value: -indy-cat
+    value: -primary
   - name: APP_NAME
     displayName: App Name
     description: Used to group components together in the OpenShift console.
@@ -301,7 +301,7 @@ parameters:
     displayName: App Group
     description: Used to group components together.
     required: true
-    value: indy-catalyst
+    value: primary-instance
   - name: APPLICATION_DOMAIN
     displayName: Application Hostname
     description: The exposed hostname that will route to the service, if left blank a value will be defaulted.
@@ -335,7 +335,7 @@ parameters:
     displayName: Webhook URL
     description: The webhook endpoint
     required: true
-    value: http://bcreg-controller-indy-cat:8080/api/agentcb
+    value: http://bcreg-controller-primary:8080/api/agentcb
   - name: AGENT_ADMIN_PORT
     displayName: Agent Admin Port
     description: The admin port on which the service will listen.

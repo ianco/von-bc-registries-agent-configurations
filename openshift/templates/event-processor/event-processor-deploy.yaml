@@ -185,7 +185,7 @@ parameters:
     displayName: Suffix
     description: A name suffix used for all objects
     required: false
-    value: "-indy-cat"
+    value: "-primary"
   - name: APP_NAME
     displayName: App Name
     description: Used to group components together in the OpenShift console.
@@ -195,7 +195,7 @@ parameters:
     displayName: App Group
     description: The name assigned to all of the deployments in this project.
     required: true
-    value: indy-catalyst
+    value: primary-instance
   - name: IMAGE_NAMESPACE
     displayName: Image Namespace
     required: true
@@ -222,12 +222,12 @@ parameters:
     displayName: Controller API URL
     description: Controler API URL.
     required: true
-    value: http://bcreg-controller-indy-cat:8080
+    value: http://bcreg-controller-primary:8080
   - name: BC_REG_DB_HOST
     displayName: BC Registries Database Host
     description: BC Registries Database Host.
     required: true
-    value: bc-reg-fdw-indy-cat
+    value: bc-reg-fdw-primary
   - name: BC_REG_DB_PORT
     displayName: BC Registries Database Port
     description: BC Registries Database Port.
@@ -242,7 +242,7 @@ parameters:
     displayName: Event Processor Database Host
     description: Event Processor Database Host.
     required: true
-    value: event-db-indy-cat
+    value: event-db-primary
   - name: EVENT_PROC_DB_PORT
     displayName: Event Processor Database Port
     description: Event Processor Database Port.
@@ -257,7 +257,7 @@ parameters:
     displayName: Mara Database Host
     description: Mara Database Host.
     required: true
-    value: event-processor-log-db-indy-cat
+    value: event-processor-log-db-primary
   - name: MARA_DB_PORT
     displayName: Mara Database Port
     description: Mara Database Port.

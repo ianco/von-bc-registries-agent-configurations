@@ -4,9 +4,9 @@
 # Template File: ../openshift/templates/event-processor-log-db/event-processor-log-db-deploy.json
 #=========================================================
 # NAME=event-processor-log-db
-# SUFFIX=-indy-cat
+# SUFFIX=-primary
 # APP_NAME=BcRegistriesAgent
-# APP_GROUP=indy-catalyst
+# APP_GROUP=primary-instance
 # IMAGE_NAMESPACE=devex-von-bc-registries-agent-tools
 # SOURCE_IMAGE_NAME=db
 TAG_NAME=dev

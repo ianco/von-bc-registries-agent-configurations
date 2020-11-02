@@ -4,16 +4,16 @@
 # Template File: ../openshift/templates/agent/agent-deploy.yaml
 #=========================================================
 # NAME=agent
-# SUFFIX=-indy-cat
+# SUFFIX=-primary
 # APP_NAME=BcRegistriesAgent
-# APP_GROUP=indy-catalyst
+# APP_GROUP=primary-instance
 APPLICATION_DOMAIN=bc-reg-agent-test.orgbook.gov.bc.ca 
 # ROUTE_TIMEOUT=120s
 # IMAGE_NAMESPACE=devex-von-bc-registries-agent-tools
 TAG_NAME=test
 # AGENT_LABEL_NAME=bcreg-agent
 AGENT_BASE_URL=https://bc-reg-agent-test.orgbook.gov.bc.ca 
-# WEBHOOK_URL=http://bcreg-controller-indy-cat:8080/api/agentcb
+# WEBHOOK_URL=http://bcreg-controller-primary:8080/api/agentcb
 # AGENT_ADMIN_PORT=8024
 # ADMIN_API_KEY=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 # AGENT_HTTP_PORT=8021

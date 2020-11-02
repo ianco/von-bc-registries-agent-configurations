@@ -4,9 +4,9 @@
 # Template File: ../openshift/templates/bc-reg-fdw/bc-reg-fdw-deploy.json
 #=========================================================
 # NAME=bc-reg-fdw
-# SUFFIX=-indy-cat
+# SUFFIX=-primary
 # APP_NAME=BcRegistriesAgent
-# APP_GROUP=indy-catalyst
+# APP_GROUP=primary-instance
 # POSTGRESQL_DATABASE_NAME=BC_REGISTRIES
 # POSTGRESQL_USER=[a-zA-Z_][a-zA-Z0-9_]{10}
 # POSTGRESQL_PASSWORD=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
@@ -19,8 +19,8 @@
 # FDW_FOREIGN_SCHEMA=
 # FDW_USER=[a-zA-Z_][a-zA-Z0-9_]{10}
 # FDW_PASS=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
-# POSTGIS_EXTENSION=N
-# PGCRYPTO_EXTENSION=N
+# POSTGIS_EXTENSION='N'
+# PGCRYPTO_EXTENSION='N'
 # IMAGE_NAMESPACE=devex-von-bc-registries-agent-tools
 # SOURCE_IMAGE_NAME=bc-reg-fdw
 TAG_NAME=test

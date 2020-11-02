@@ -4,9 +4,9 @@
 # Template File: ../openshift/templates/bcreg-controller/bcreg-controller-deploy.json
 #=========================================================
 NAME=bcreg-controller
-SUFFIX=-indy-cat
+SUFFIX=-primary
 APP_NAME=BcRegistriesAgent
-APP_GROUP=indy-catalyst
+APP_GROUP=primary-instance
 IMAGE_NAMESPACE=devex-von-bc-registries-agent-tools
 TAG_NAME=dev
 CONFIG_ROOT=../config
