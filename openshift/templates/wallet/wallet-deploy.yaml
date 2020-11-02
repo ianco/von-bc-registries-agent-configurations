@@ -242,13 +242,14 @@ parameters:
     displayName: Persistent Volume Size
     description: The size of the persistent volume , e.g. 512Mi, 1Gi, 2Gi.
     required: true
-    value: 60Gi
+    value: 5Gi
   - name: PERSISTENT_VOLUME_CLASS
     displayName: Persistent Volume Class name
     description:
       The class of the volume; netapp-file-standard, netapp-block-standard
     required: false
     value: netapp-file-standard
+
   - name: CPU_REQUEST
     displayName: Resources CPU Request
     description: The resources CPU request (in cores) for this build.
