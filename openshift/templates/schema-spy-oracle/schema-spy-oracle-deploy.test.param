@@ -9,7 +9,7 @@
 # APP_GROUP=primary-instance
 # IMAGE_NAMESPACE=7cba16-tools
 # SOURCE_IMAGE_NAME=schema-spy-with-oracle-jdbc
-APPLICATION_DOMAIN=schema-spy-oracle-primary-test.pathfinder.gov.bc.ca
+APPLICATION_DOMAIN=schema-spy-oracle-primary-test.apps.silver.devops.gov.bc.ca
 # OUTPUT_PATH=/var/www/html/doc
 # SCHEMASPY_USER=[a-zA-Z_][a-zA-Z0-9_]{10}
 # SCHEMASPY_PASSWORD=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}

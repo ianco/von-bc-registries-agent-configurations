@@ -359,7 +359,7 @@ parameters:
     displayName: Agent endpoint
     description: The endpoint of the agent
     required: true
-    value: https://bc-reg-agent-dev.orgbook.gov.bc.ca
+    value: https://bc-reg-agent-primary-dev.apps.silver.devops.gov.bc.ca
   - name: WEBHOOK_URL
     displayName: Webhook URL
     description: The webhook endpoint
