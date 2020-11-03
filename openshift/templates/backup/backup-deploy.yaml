@@ -12,6 +12,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
     spec:
       storageClassName: ${BACKUP_VOLUME_CLASS}
@@ -28,6 +29,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
     spec:
       storageClassName: ${VERIFICATION_VOLUME_CLASS}
@@ -44,11 +46,12 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
     stringData:
       webhook-url: ${WEBHOOK_URL}
     type: Opaque
-    
+
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
@@ -57,6 +60,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
       annotations:
         description: Defines how to deploy the ${NAME}${SUFFIX} server
@@ -84,6 +88,7 @@ objects:
             name: ${NAME}${SUFFIX}
             app: ${APP_NAME}${SUFFIX}
             app-group: ${APP_GROUP}
+            role: ${ROLE}
             env: ${TAG_NAME}
         spec:
           volumes:
@@ -101,7 +106,7 @@ objects:
                     path: ${CONFIG_FILE_NAME}
           containers:
             - name: ${NAME}${SUFFIX}
-              image: 
+              image:
               ports: []
               env:
                 - name: BACKUP_STRATEGY
@@ -164,6 +169,11 @@ parameters:
   - name: NAME
     displayName: Name
     description: The name assigned to all of the resources defined in this template.
+    required: true
+    value: backup
+  - name: ROLE
+    displayName: Role
+    description: Role
     required: true
     value: backup
   - name: SUFFIX
@@ -237,7 +247,7 @@ parameters:
       The URL of the webhook to use for notifications.  If not specified,
       the webhook integration feature is disabled.
     required: false
-    value: 
+    value:
   - name: ENVIRONMENT_FRIENDLY_NAME
     displayName: Friendly Environment Name
     description:
@@ -245,14 +255,14 @@ parameters:
       by the webhook integration to identify the environment in which the backup notifications
       originate.
     required: false
-    value: 
+    value:
   - name: ENVIRONMENT_NAME
     displayName: Environment Name (Environment Id)
     description:
       The name or Id of the environment.  This variable is used by the webhook
       integration to identify the environment in which the backup notifications originate.
     required: false
-    value: 
+    value:
   - name: BACKUP_DIR
     displayName: The root backup directory
     description:

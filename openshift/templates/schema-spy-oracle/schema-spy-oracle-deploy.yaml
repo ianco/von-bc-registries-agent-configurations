@@ -15,6 +15,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
     stringData:
       password: ${SCHEMASPY_PASSWORD}
@@ -28,6 +29,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
       annotations:
         description: Exposes and load balances the application pods
@@ -47,6 +49,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
     spec:
       host: ${APPLICATION_DOMAIN}
@@ -66,6 +69,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
     spec:
       strategy:
@@ -95,6 +99,7 @@ objects:
             name: ${NAME}${SUFFIX}
             app: ${APP_NAME}${SUFFIX}
             app-group: ${APP_GROUP}
+            role: ${ROLE}
             env: ${TAG_NAME}
         spec:
           containers:
@@ -186,6 +191,11 @@ parameters:
     description:
       The name assigned to all of the schema spy objects defined in this
       template.
+    required: true
+    value: schema-spy-oracle
+  - name: ROLE
+    displayName: Role
+    description: Role
     required: true
     value: schema-spy-oracle
   - name: SUFFIX

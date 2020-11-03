@@ -16,6 +16,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
     spec:
       strategy:
@@ -46,6 +47,7 @@ objects:
             name: ${NAME}${SUFFIX}
             app: ${APP_NAME}${SUFFIX}
             app-group: ${APP_GROUP}
+            role: ${ROLE}
             env: ${TAG_NAME}
         spec:
           volumes:
@@ -126,6 +128,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
     spec:
       storageClassName: ${PERSISTENT_VOLUME_CLASS}
@@ -142,6 +145,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
     stringData:
       admin-password: ${POSTGRESQL_ADMIN_PASSWORD}
@@ -156,6 +160,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
       annotations:
         template.openshift.io/expose-uri: postgres://{.spec.clusterIP}:{.spec.ports[?(.name==postgresql)].port}
@@ -175,6 +180,11 @@ parameters:
     description:
       The name assigned to all of the OpenShift resources associated to the
       server instance.
+    required: true
+    value: wallet
+  - name: ROLE
+    displayName: Role
+    description: Role
     required: true
     value: wallet
   - name: SUFFIX

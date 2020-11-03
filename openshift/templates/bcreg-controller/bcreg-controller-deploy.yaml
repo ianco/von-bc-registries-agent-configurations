@@ -14,6 +14,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
     stringData:
       cr-agent-admin-api-url: ${CR_AGENT_ADMIN_URL}
@@ -27,6 +28,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
     spec:
       ports:
@@ -44,6 +46,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
       annotations:
         description: Defines how to deploy the container.
@@ -77,6 +80,7 @@ objects:
             name: ${NAME}${SUFFIX}
             app: ${APP_NAME}${SUFFIX}
             app-group: ${APP_GROUP}
+            role: ${ROLE}
             env: ${TAG_NAME}
         spec:
           containers:
@@ -142,6 +146,7 @@ objects:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
     spec:
       scaleTargetRef:
@@ -155,6 +160,11 @@ parameters:
     description: The name assigned to all of the objects defined in this template.
     required: true
     value: bcreg-controller
+  - name: ROLE
+    displayName: Role
+    description: Role
+    required: true
+    value: controller
   - name: SUFFIX
     displayName: Suffix
     description: A name suffix used for all objects
