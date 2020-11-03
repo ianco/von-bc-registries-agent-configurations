@@ -6,6 +6,38 @@ metadata:
   annotations:
     description: Deployment template for a ${NAME} instance.
 objects:
+
+  - kind: NetworkSecurityPolicy
+    apiVersion: security.devops.gov.bc.ca/v1alpha1
+    metadata:
+      name: ${NAME}${SUFFIX}
+      labels:
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
+    spec:
+      description: |
+        Allow the event processor pods to communicate with the controller, event-db, and event-processor-log pods.
+      source:
+        - - role=${ROLE}
+          - app=${APP_NAME}${SUFFIX}
+          - env=${TAG_NAME}
+          - $namespace=${NAMESPACE}-${TAG_NAME}
+      destination:
+        - - role=${CONTROLLER_ROLE}
+          - app=${APP_NAME}${SUFFIX}
+          - env=${TAG_NAME}
+          - $namespace=${NAMESPACE}-${TAG_NAME}
+        - - role=${EVENT_DB_ROLE}
+          - app=${APP_NAME}${SUFFIX}
+          - env=${TAG_NAME}
+          - $namespace=${NAMESPACE}-${TAG_NAME}
+        - - role=${EVENT_PROCESSOR_LOG_ROLE}
+          - app=${APP_NAME}${SUFFIX}
+          - env=${TAG_NAME}
+          - $namespace=${NAMESPACE}-${TAG_NAME}
+
   - kind: Secret
     apiVersion: v1
     metadata:
@@ -194,6 +226,25 @@ parameters:
     description: Role
     required: true
     value: event-processor
+  - name: CONTROLLER_ROLE
+    displayName: Controller Role
+    description: The name given to the controller role.
+    required: true
+    value: controller
+  - name: EVENT_DB_ROLE
+    displayName: Event DB Role
+    description: The name given to the event DB role.
+    required: true
+    value: event-db
+  - name: EVENT_PROCESSOR_LOG_ROLE
+    displayName: Event Processor Log Role
+    description: The name given to the event processor log role.
+    required: true
+    value: event-processor-log
+  - name: NAMESPACE
+    displayName: The target namespace for the resources.
+    required: true
+    value: 7cba16
   - name: SUFFIX
     displayName: Suffix
     description: A name suffix used for all objects

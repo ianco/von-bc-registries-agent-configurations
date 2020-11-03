@@ -49,6 +49,7 @@ objects:
             app-group: ${APP_GROUP}
             role: ${ROLE}
             env: ${TAG_NAME}
+            backup: ${BACKUP}
         spec:
           volumes:
             - name: ${NAME}${SUFFIX}-data
@@ -187,6 +188,10 @@ parameters:
     description: Role
     required: true
     value: event-db
+  - name: NAMESPACE
+    displayName: The target namespace for the resources.
+    required: true
+    value: 7cba16
   - name: SUFFIX
     displayName: Suffix
     description: A name suffix used for all objects
@@ -262,6 +267,13 @@ parameters:
       The class of the volume; netapp-file-standard, netapp-block-standard
     required: false
     value: netapp-file-standard
+  - name: BACKUP
+    displayName: Allow database backup
+    description:
+      Allow database backup; "true" or "false".
+    required: true
+    value: "true"
+
   - name: CPU_REQUEST
     displayName: Resources CPU Request
     description: The resources CPU request (in cores) for this build.
