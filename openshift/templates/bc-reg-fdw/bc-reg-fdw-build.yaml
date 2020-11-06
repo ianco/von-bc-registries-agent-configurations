@@ -28,9 +28,22 @@ objects:
           ref: ${GIT_REF}
           uri: ${GIT_REPO_URL}
         contextDir: ${SOURCE_CONTEXT_DIR}
+        secrets:
+        - secret:
+            name: etc-pki-entitlement
+          destinationDir: etc-pki-entitlement
+        configMaps:
+        - configMap:
+            name: rhsm-conf
+          destinationDir: rhsm-conf
+        - configMap:
+            name: rhsm-ca
+          destinationDir: rhsm-ca
       strategy:
         type: Docker
         dockerStrategy:
+          noCache: true
+          imageOptimizationPolicy: SkipLayers
           dockerfilePath: ${DOCKER_FILE_PATH}
           from:
             kind: ${SOURCE_IMAGE_KIND}
@@ -94,7 +107,7 @@ parameters:
     displayName: Docker File Path
     description: The path to the docker file.
     required: true
-    value: centos7.rh-postgresql96/Dockerfile
+    value: rhel7.rh-postgresql96/Dockerfile
   - name: SOURCE_IMAGE_KIND
     displayName: Source Image Kind
     description:
@@ -108,7 +121,7 @@ parameters:
       The name of the source image.  If specified, this overrides the 'FROM'
       spec in the Docker file.
     required: false
-    value: rhel7
+    value: registry.access.redhat.com/rhel7
   - name: SOURCE_IMAGE_TAG
     displayName: Source Image Tag
     description:
