@@ -1,5 +1,8 @@
 _includeFile=$(type -p overrides.inc)
+# Import ocFunctions.inc for getSecret
+_ocFunctions=$(type -p ocFunctions.inc)
 if [ ! -z ${_includeFile} ]; then
+  . ${_ocFunctions}
   . ${_includeFile}
 else
   _red='\033[0;31m'; _yellow='\033[1;33m'; _nc='\033[0m'; echo -e \\n"${_red}overrides.inc could not be found on the path.${_nc}\n${_yellow}Please ensure the openshift-developer-tools are installed on and registered on your path.${_nc}\n${_yellow}https://github.com/BCDevOps/openshift-developer-tools${_nc}"; exit 1;
@@ -24,9 +27,10 @@ if createOperation; then
   readParameter "FDW_FOREIGN_NAME - Please provide the name of the foreign database.\nThe default is an empty string:" FDW_FOREIGN_NAME "" "false"
   readParameter "FDW_FOREIGN_CATALOG - Please provide the name of the foreign catalog for the database.\nIt should be the <listener service name>.\nThe default is an empty string:" FDW_FOREIGN_CATALOG "" "false"
   readParameter "FDW_FOREIGN_SCHEMA - Please provide the name of the schema of the foreign database.\nThe default is an empty string:" FDW_FOREIGN_SCHEMA "" "false"
+  readParameter "FDW_CIDR - Please provide the CIDR range for the ExternalNetwork definition to limit accessible IPs for the service.\nThe default is an empty string:" FDW_CIDR "" "false"
 else
   # Secrets are removed from the configurations during update operations ...
-  printStatusMsg "Update operation detected ...\nSkipping the generation of random user credentials ...\nSkipping the prompts for the FDW_USER, FDW_PASS, FDW_FOREIGN_HOST, FDW_FOREIGN_NAME, FDW_FOREIGN_CATALOG, and FDW_FOREIGN_SCHEMA secrets ...\n"
+  printStatusMsg "Update operation detected ...\nSkipping the generation of random user credentials ...\nSkipping the prompts for the FDW_USER, FDW_PASS, FDW_FOREIGN_HOST, FDW_FOREIGN_NAME, FDW_FOREIGN_CATALOG, and FDW_FOREIGN_SCHEMA secrets ..."
   # Generated
   writeParameter "POSTGRESQL_USER" "generation_skipped" "false"
   writeParameter "POSTGRESQL_PASSWORD" "generation_skipped" "false"
@@ -38,6 +42,10 @@ else
   writeParameter "FDW_FOREIGN_NAME" "generation_skipped" "false"
   writeParameter "FDW_FOREIGN_CATALOG" "generation_skipped" "false"
   writeParameter "FDW_FOREIGN_SCHEMA" "generation_skipped" "false"
+
+  # Get FDW_CIDR from secret
+  printStatusMsg "Getting CIDR range for the ExternalNetwork definition from secret ...\n"
+  writeParameter "FDW_CIDR" $(getSecret "${NAME}${SUFFIX}" "fdw-cidr") "false"
 fi
 
 SPECIALDEPLOYPARMS="--param-file=${_overrideParamFile}"

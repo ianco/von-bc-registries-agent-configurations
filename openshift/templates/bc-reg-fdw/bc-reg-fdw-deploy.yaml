@@ -7,6 +7,46 @@ metadata:
     tags: ${NAME}${SUFFIX}
   name: ${NAME}${SUFFIX}-deploy-template
 objects:
+
+  - kind: ExternalNetwork
+    apiVersion: security.devops.gov.bc.ca/v1alpha1
+    metadata:
+      name: ${NAME}${SUFFIX}
+      network: ${NAME}${SUFFIX}
+      labels:
+        name: ${NAME}${SUFFIX}
+        network: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
+    spec:
+      description: |
+        Define the network parameters for accessing the remote database.
+      entries:
+        - ${FDW_CIDR}
+      servicePorts:
+        - tcp/1521
+
+  - kind: NetworkSecurityPolicy
+    apiVersion: security.devops.gov.bc.ca/v1alpha1
+    metadata:
+      name: ${NAME}${SUFFIX}
+      labels:
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
+    spec:
+      description: |
+        Allow the foreign data wrapper to access the remote database.
+      source:
+        - - role=${ROLE}
+          - app=${APP_NAME}${SUFFIX}
+          - env=${TAG_NAME}
+          - $namespace=${NAMESPACE}-${TAG_NAME}
+      destination:
+        - - ext:name=${NAME}${SUFFIX}
+
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
@@ -47,6 +87,7 @@ objects:
             app-group: ${APP_GROUP}
             role: ${ROLE}
             env: ${TAG_NAME}
+            backup: ${BACKUP}
         spec:
           volumes:
             - name: ${NAME}${SUFFIX}-data
@@ -146,6 +187,7 @@ objects:
           dnsPolicy: ClusterFirst
           securityContext: {}
           schedulerName: default-scheduler
+
   - kind: PersistentVolumeClaim
     apiVersion: v1
     metadata:
@@ -163,6 +205,7 @@ objects:
       resources:
         requests:
           storage: ${PERSISTENT_VOLUME_SIZE}
+
   - kind: Secret
     apiVersion: v1
     metadata:
@@ -184,7 +227,9 @@ objects:
       fdw-server: ${FDW_FOREIGN_HOST}/${FDW_FOREIGN_CATALOG}
       fdw-user: ${FDW_USER}
       fdw-password: ${FDW_PASS}
+      fdw-cidr: ${FDW_CIDR}
     type: Opaque
+
   - kind: Service
     apiVersion: v1
     metadata:
@@ -205,6 +250,7 @@ objects:
         name: ${NAME}${SUFFIX}
       type: ClusterIP
       sessionAffinity: None
+
 parameters:
   - name: NAME
     displayName: Name
@@ -218,6 +264,10 @@ parameters:
     description: Role
     required: true
     value: fdw
+  - name: NAMESPACE
+    displayName: The target namespace for the resources.
+    required: true
+    value: 7cba16
   - name: SUFFIX
     displayName: Suffix
     description: A name suffix used for all objects
@@ -349,6 +399,20 @@ parameters:
       The class of the volume; netapp-file-standard, netapp-block-standard
     required: false
     value: netapp-file-standard
+  - name: FDW_CIDR
+    displayName: CIDR Range
+    description:
+      CIDR Range for the ExternalNetwork definition to limit accessible IPs.
+    required: true
+    value: 
+
+  - name: BACKUP
+    displayName: Allow database backup
+    description:
+      Allow database backup; "true" or "false".
+    required: true
+    value: "false"
+
   - name: CPU_REQUEST
     displayName: Resources CPU Request
     description: The resources CPU request (in cores) for this build.
