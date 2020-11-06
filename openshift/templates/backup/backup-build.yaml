@@ -5,6 +5,7 @@ metadata:
   name: ${NAME}-build-template
   creationTimestamp:
 objects:
+
   - kind: ImageStream
     apiVersion: v1
     metadata:
@@ -13,6 +14,7 @@ objects:
         name: ${NAME}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+
   - kind: BuildConfig
     apiVersion: v1
     metadata:

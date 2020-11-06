@@ -44,6 +44,7 @@ objects:
       cr-agent-admin-api-url: ${CR_AGENT_ADMIN_URL}
       cr-agent-admin-api-key: ${CR_ADMIN_API_KEY}
     type: Opaque
+
   - kind: Service
     apiVersion: v1
     metadata:
@@ -62,6 +63,7 @@ objects:
           targetPort: ${{HOST_PORT}}
       selector:
         name: ${NAME}${SUFFIX}
+
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
@@ -162,6 +164,7 @@ objects:
                 limits:
                   cpu: ${CPU_LIMIT}
                   memory: ${MEMORY_LIMIT}
+
   - kind: HorizontalPodAutoscaler
     apiVersion: autoscaling/v1
     metadata:

@@ -51,6 +51,7 @@ objects:
     stringData:
       webhook-url: ${WEBHOOK_URL}
     type: Opaque
+
   - kind: Service
     apiVersion: v1
     metadata:
@@ -69,6 +70,7 @@ objects:
           targetPort: 8080
       selector:
         name: ${NAME}${SUFFIX}
+
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
