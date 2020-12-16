@@ -18,13 +18,17 @@ objects:
         env: ${TAG_NAME}
     spec:
       description: |
-        Allow the event processor pods to communicate with the controller, event-db, and event-processor-log pods.
+        Allow the event processor pods to communicate with the foreign data wrapper, controller, event-db, and event-processor-log pods.
       source:
         - - role=${ROLE}
           - app=${APP_NAME}${SUFFIX}
           - env=${TAG_NAME}
           - $namespace=${NAMESPACE}-${TAG_NAME}
       destination:
+        - - role=${FDW_ROLE}
+          - app=${APP_NAME}${SUFFIX}
+          - env=${TAG_NAME}
+          - $namespace=${NAMESPACE}-${TAG_NAME}
         - - role=${CONTROLLER_ROLE}
           - app=${APP_NAME}${SUFFIX}
           - env=${TAG_NAME}
@@ -118,7 +122,7 @@ objects:
         spec:
           containers:
             - name: ${NAME}${SUFFIX}
-              image:  
+              image:
               ports:
                 - containerPort: 8080
                   protocol: TCP
@@ -228,6 +232,11 @@ parameters:
     description: Role
     required: true
     value: event-processor
+  - name: FDW_ROLE
+    displayName: FDW Role
+    description: The name given to the foreign data wrapper role.
+    required: true
+    value: fdw
   - name: CONTROLLER_ROLE
     displayName: Controller Role
     description: The name given to the controller role.
@@ -338,14 +347,14 @@ parameters:
     displayName: Start Cron Jobs
     description: Start go-crond and load the cron jobs from the CRON_FOLDER.
     required: false
-    value: 
+    value:
   - name: WEBHOOK_URL
     displayName: Webhook URL
     description:
       The URL of the webhook to use for notifications.  If not specified,
       the webhook integration feature is disabled.
     required: false
-    value: 
+    value:
   - name: WEBHOOK_LEVEL
     displayName: Webhook Log Level
     description: The webhook log level filter; 0=Error, 1=Warning, 2=Info

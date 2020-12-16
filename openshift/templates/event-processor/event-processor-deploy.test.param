@@ -1,9 +1,15 @@
 #=========================================================
 # OpenShift template parameters for:
 # Component: .
-# Template File: ../openshift/templates/event-processor/event-processor-deploy.json
+# Template File: ../openshift/templates/event-processor/event-processor-deploy.yaml
 #=========================================================
 # NAME=event-processor
+# ROLE=event-processor
+# FDW_ROLE=fdw
+# CONTROLLER_ROLE=controller
+# EVENT_DB_ROLE=event-db
+# EVENT_PROCESSOR_LOG_ROLE=event-processor-log
+# NAMESPACE=7cba16
 # SUFFIX=-primary
 # APP_NAME=BcRegistriesAgent
 # APP_GROUP=primary-instance
@@ -25,7 +31,7 @@ TAG_NAME=test
 # WEBHOOK_URL=
 # WEBHOOK_LEVEL=2
 PROJECT_NAME=7cba16-test
-FRIENDLY_PROJECT_NAME=BC Registries ICIA (test)
+# FRIENDLY_PROJECT_NAME=BC Registries Agent (test)
 # NOTIFY_OF_CREDENTIAL_POSTING_ERRORS=false
 # MAX_CREDS_REQUESTS=80
 # CREDS_REQUEST_SIZE=1
