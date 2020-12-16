@@ -6,3 +6,5 @@ export GIT_REF="master"
 # Templates NOT in this list will have they GIT referances over-ridden
 # with the values of GIT_URI and GIT_REF
 export -a skip_git_overrides="bc-reg-fdw-build.json backup-build.json"
+
+export ignore_templates="backup-deploy"
