@@ -885,7 +885,7 @@ case "${_cmd}" in
     eventProcessorPodName=${1:-event-processor}
     postCreds "${eventProcessorPodName}"
     ;;
-  initialcoadcreds)
+  initialloadcreds)
     eventProcessorPodName=${1:-event-processor}
     initialLoadCreds "${eventProcessorPodName}"
     ;;
