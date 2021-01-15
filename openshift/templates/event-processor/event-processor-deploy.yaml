@@ -7,6 +7,25 @@ metadata:
     description: Deployment template for a ${NAME} instance.
 objects:
 
+  - kind: ExternalNetwork
+    apiVersion: security.devops.gov.bc.ca/v1alpha1
+    metadata:
+      name: ${NAME}${SUFFIX}
+      network: ${NAME}${SUFFIX}
+      labels:
+        name: ${NAME}${SUFFIX}
+        network: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        env: ${TAG_NAME}
+    spec:
+      description: |
+        Define the network parameters for accessing remote resources.
+      entries:
+        - ${WEBHOOK_URL_HOST}
+      servicePorts:
+        - tcp/443
+
   - kind: NetworkSecurityPolicy
     apiVersion: security.devops.gov.bc.ca/v1alpha1
     metadata:
@@ -18,13 +37,14 @@ objects:
         env: ${TAG_NAME}
     spec:
       description: |
-        Allow the event processor pods to communicate with the foreign data wrapper, controller, event-db, and event-processor-log pods.
+        Allow the event processor pods to communicate with the foreign data wrapper, controller, event-db, event-processor-log pods, plus a limited set of external resources.
       source:
         - - role=${ROLE}
           - app=${APP_NAME}${SUFFIX}
           - env=${TAG_NAME}
           - $namespace=${NAMESPACE}-${TAG_NAME}
       destination:
+        - - ext:name=${NAME}${SUFFIX}
         - - role=${FDW_ROLE}
           - app=${APP_NAME}${SUFFIX}
           - env=${TAG_NAME}
@@ -54,6 +74,7 @@ objects:
         env: ${TAG_NAME}
     stringData:
       webhook-url: ${WEBHOOK_URL}
+      webhook-url-host: ${WEBHOOK_URL_HOST}
     type: Opaque
 
   - kind: Service
@@ -353,6 +374,11 @@ parameters:
     description:
       The URL of the webhook to use for notifications.  If not specified,
       the webhook integration feature is disabled.
+    required: false
+    value:
+  - name: WEBHOOK_URL_HOST
+    displayName: Webhook URL Hostname
+    description: Webhook URL Hostname.  The *.overrides.sh script will parse this from the supplied WEBHOOK_URL, and fetch it from a secret for updates.
     required: false
     value:
   - name: WEBHOOK_LEVEL
