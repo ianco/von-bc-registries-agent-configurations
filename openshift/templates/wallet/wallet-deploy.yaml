@@ -33,7 +33,7 @@ objects:
             - podSelector:
                 matchLabels:
                   role: ${BACKUP_ROLE}
-                  app: ${BACKUP_APP_NAME}
+                  app: ${BACKUP_APP_NAME}${SUFFIX}
                   env: ${TAG_NAME}
               namespaceSelector:
                 matchLabels:
