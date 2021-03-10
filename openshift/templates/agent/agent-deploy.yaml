@@ -53,7 +53,7 @@ objects:
                   env: ${TAG_NAME}
               namespaceSelector:
                 matchLabels:
-                  name: ${NAMESPACE_NAME}
+                  name: ${NAMESPACE}
                   environment: ${TAG_NAME}
           ports:
             - protocol: TCP
