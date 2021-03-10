@@ -1,0 +1,21 @@
+# Uses the 'testConnection' script from https://github.com/BCDevOps/openshift-developer-tools
+# Example:
+# echo -e "agent-primary\n bcreg-controller-primary\n bc-reg-fdw-primary\n event-db-primary\n event-processor-log-db-primary\n event-processor-primary\n wallet-primary\n backup-primary"  | xargs -I {} testConnection -n 8ad0ea-dev -f TestConnections.txt -p {}
+
+google.com:80
+agent-primary:8021
+agent-primary:8023
+agent-primary:8024
+bcreg-controller-primary:8080
+bc-reg-fdw-primary:5432
+event-db-primary:5432
+event-processor-log-db-primary:5432
+event-processor-primary:8080
+wallet-primary:8080
+schema-spy-oracle-primary:8080
+backup-primary:5432
+
+
+
+
+agent-primary\n bcreg-controller-primary\n bc-reg-fdw-primary\n event-db-primary\n event-processor-log-db-primary\n event-processor-primary\n wallet-primary\n backup-primary
