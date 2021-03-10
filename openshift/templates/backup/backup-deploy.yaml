@@ -144,26 +144,29 @@ objects:
                   value: ${WEEKLY_BACKUPS}
                 - name: MONTHLY_BACKUPS
                   value: ${MONTHLY_BACKUPS}
-                - name: EVENT_DB_INDY_CAT_USER
+                  
+                - name: EVENT_DB_PRIMARY_USER
                   valueFrom:
                     secretKeyRef:
                       name: ${DATABASE_DEPLOYMENT_NAME}${SUFFIX}
                       key: ${DATABASE_USER_KEY_NAME}
-                - name: EVENT_DB_INDY_CAT_PASSWORD
+                - name: EVENT_DB_PRIMARY_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: ${DATABASE_DEPLOYMENT_NAME}${SUFFIX}
                       key: ${DATABASE_PASSWORD_KEY_NAME}
-                - name: WALLET_INDY_CAT_USER
+
+                - name: WALLET_PRIMARY_USER
                   valueFrom:
                     secretKeyRef:
                       name: ${WALLET_DB_HOST_NAME}${SUFFIX}
                       key: ${DATABASE_USER_KEY_NAME}
-                - name: WALLET_INDY_CAT_PASSWORD
+                - name: WALLET_PRIMARY_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: ${WALLET_DB_HOST_NAME}${SUFFIX}
                       key: ${DATABASE_PASSWORD_KEY_NAME}
+
                 - name: WEBHOOK_URL
                   valueFrom:
                     secretKeyRef:
