@@ -8,6 +8,46 @@ metadata:
   name: ${NAME}${SUFFIX}-persistent-template
 objects:
 
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
+    metadata:
+      name: ${NAME}${SUFFIX}
+      labels:
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        env: ${TAG_NAME}
+    spec:
+      description: |
+        Allow the agent(s) to access the wallet.
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  role: ${EVENT_PROCESSOR_ROLE}
+                  app: ${APP_NAME}${SUFFIX}
+                  env: ${TAG_NAME}
+              namespaceSelector:
+                matchLabels:
+                  name: ${NAMESPACE_NAME}
+                  environment: ${TAG_NAME}
+            - podSelector:
+                matchLabels:
+                  role: ${BACKUP_ROLE}
+                  app: ${BACKUP_APP_NAME}
+                  env: ${TAG_NAME}
+              namespaceSelector:
+                matchLabels:
+                  name: ${NAMESPACE_NAME}
+                  environment: ${TAG_NAME}
+          ports:
+            - protocol: TCP
+              port: 5432
+      podSelector:
+        matchLabels:
+          role: ${ROLE}
+          app: ${APP_NAME}${SUFFIX}
+          env: ${TAG_NAME}
+
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
@@ -187,11 +227,28 @@ parameters:
       server instance.
     required: true
     value: event-db
+
   - name: ROLE
     displayName: Role
     description: Role
     required: true
     value: event-db
+  - name: EVENT_PROCESSOR_ROLE
+    displayName: Event Processor Role
+    description: Event Processor Role
+    required: true
+    value: event-processor
+  - name: BACKUP_ROLE
+    displayName: Backup Role
+    description: Backup Role
+    required: true
+    value: backup
+  - name: BACKUP_APP_NAME
+    displayName: Backup App Name
+    description: The App Name associated with the backup container.
+    required: true
+    value: Backup
+
   - name: NAMESPACE
     displayName: The target namespace for the resources.
     required: true

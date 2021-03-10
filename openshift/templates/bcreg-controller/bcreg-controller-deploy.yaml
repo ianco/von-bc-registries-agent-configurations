@@ -7,28 +7,71 @@ metadata:
     description: Deployment template for a ${NAME} instance.
 objects:
 
-  - kind: NetworkSecurityPolicy
-    apiVersion: security.devops.gov.bc.ca/v1alpha1
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
     metadata:
       name: ${NAME}${SUFFIX}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
     spec:
       description: |
-        Allow the controller pods to communicate with the agent pods.
-      source:
-        - - role=${ROLE}
-          - app=${APP_NAME}${SUFFIX}
-          - env=${TAG_NAME}
-          - $namespace=${NAMESPACE}-${TAG_NAME}
-      destination:
-        - - role=${AGENT_ROLE}
-          - app=${APP_NAME}${SUFFIX}
-          - env=${TAG_NAME}
-          - $namespace=${NAMESPACE}-${TAG_NAME}
+        Allow the agent and event processor to access the controller.
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  role: ${AGENT_ROLE}
+                  app: ${APP_NAME}${SUFFIX}
+                  env: ${TAG_NAME}
+              namespaceSelector:
+                matchLabels:
+                  name: ${NAMESPACE_NAME}
+                  environment: ${TAG_NAME}
+            - podSelector:
+                matchLabels:
+                  role: ${EVENT_PROCESSOR_ROLE}
+                  app: ${APP_NAME}${SUFFIX}
+                  env: ${TAG_NAME}
+              namespaceSelector:
+                matchLabels:
+                  name: ${NAMESPACE_NAME}
+                  environment: ${TAG_NAME}
+          ports:
+            - protocol: TCP
+              port: ${{HOST_PORT}}
+      podSelector:
+        matchLabels:
+          role: ${ROLE}
+          app: ${APP_NAME}${SUFFIX}
+          env: ${TAG_NAME}
+
+
+  # - kind: NetworkSecurityPolicy
+  #   apiVersion: security.devops.gov.bc.ca/v1alpha1
+  #   metadata:
+  #     name: ${NAME}${SUFFIX}
+  #     labels:
+  #       name: ${NAME}${SUFFIX}
+  #       app: ${APP_NAME}${SUFFIX}
+  #       app-group: ${APP_GROUP}
+  #       env: ${TAG_NAME}
+  #   spec:
+  #     description: |
+  #       Allow the controller pods to communicate with the agent pods.
+  #     source:
+  #       - - role=${ROLE}
+  #         - app=${APP_NAME}${SUFFIX}
+  #         - env=${TAG_NAME}
+  #         - $namespace=${NAMESPACE}-${TAG_NAME}
+  #     destination:
+  #       - - role=${AGENT_ROLE}
+  #         - app=${APP_NAME}${SUFFIX}
+  #         - env=${TAG_NAME}
+  #         - $namespace=${NAMESPACE}-${TAG_NAME}
 
   - kind: Secret
     apiVersion: v1
@@ -187,6 +230,7 @@ parameters:
     description: The name assigned to all of the objects defined in this template.
     required: true
     value: bcreg-controller
+
   - name: ROLE
     displayName: Role
     description: Role
@@ -197,6 +241,12 @@ parameters:
     description: The name given to the agent role.
     required: true
     value: agent
+  - name: EVENT_PROCESSOR_ROLE
+    displayName: Event Processor Role
+    description: Event Processor Role
+    required: true
+    value: event-processor
+
   - name: NAMESPACE
     displayName: The target namespace for the resources.
     required: true

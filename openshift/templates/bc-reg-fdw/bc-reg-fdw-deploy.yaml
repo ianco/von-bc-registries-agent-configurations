@@ -8,44 +8,84 @@ metadata:
   name: ${NAME}${SUFFIX}-deploy-template
 objects:
 
-  - kind: ExternalNetwork
-    apiVersion: security.devops.gov.bc.ca/v1alpha1
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
     metadata:
       name: ${NAME}${SUFFIX}
-      network: ${NAME}${SUFFIX}
       labels:
         name: ${NAME}${SUFFIX}
-        network: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
-        app-group: ${APP_GROUP}
         env: ${TAG_NAME}
     spec:
       description: |
-        Define the network parameters for accessing the remote database.
-      entries:
-        - ${FDW_CIDR}
-      servicePorts:
-        - tcp/1521
+        Allow the agent(s) to access the wallet.
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  role: ${EVENT_PROCESSOR_ROLE}
+                  app: ${APP_NAME}${SUFFIX}
+                  env: ${TAG_NAME}
+              namespaceSelector:
+                matchLabels:
+                  name: ${NAMESPACE_NAME}
+                  environment: ${TAG_NAME}
+            - podSelector:
+                matchLabels:
+                  role: ${SCHEMA_SPY_ROLE}
+                  app: ${APP_NAME}${SUFFIX}
+                  env: ${TAG_NAME}
+              namespaceSelector:
+                matchLabels:
+                  name: ${NAMESPACE_NAME}
+                  environment: ${TAG_NAME}
+          ports:
+            - protocol: TCP
+              port: 5432
+      podSelector:
+        matchLabels:
+          role: ${ROLE}
+          app: ${APP_NAME}${SUFFIX}
+          env: ${TAG_NAME}
 
-  - kind: NetworkSecurityPolicy
-    apiVersion: security.devops.gov.bc.ca/v1alpha1
-    metadata:
-      name: ${NAME}${SUFFIX}
-      labels:
-        name: ${NAME}${SUFFIX}
-        app: ${APP_NAME}${SUFFIX}
-        app-group: ${APP_GROUP}
-        env: ${TAG_NAME}
-    spec:
-      description: |
-        Allow the foreign data wrapper to access the remote database.
-      source:
-        - - role=${ROLE}
-          - app=${APP_NAME}${SUFFIX}
-          - env=${TAG_NAME}
-          - $namespace=${NAMESPACE}-${TAG_NAME}
-      destination:
-        - - ext:name=${NAME}${SUFFIX}
+  # - kind: ExternalNetwork
+  #   apiVersion: security.devops.gov.bc.ca/v1alpha1
+  #   metadata:
+  #     name: ${NAME}${SUFFIX}
+  #     network: ${NAME}${SUFFIX}
+  #     labels:
+  #       name: ${NAME}${SUFFIX}
+  #       network: ${NAME}${SUFFIX}
+  #       app: ${APP_NAME}${SUFFIX}
+  #       app-group: ${APP_GROUP}
+  #       env: ${TAG_NAME}
+  #   spec:
+  #     description: |
+  #       Define the network parameters for accessing the remote database.
+  #     entries:
+  #       - ${FDW_CIDR}
+  #     servicePorts:
+  #       - tcp/1521
+
+  # - kind: NetworkSecurityPolicy
+  #   apiVersion: security.devops.gov.bc.ca/v1alpha1
+  #   metadata:
+  #     name: ${NAME}${SUFFIX}
+  #     labels:
+  #       name: ${NAME}${SUFFIX}
+  #       app: ${APP_NAME}${SUFFIX}
+  #       app-group: ${APP_GROUP}
+  #       env: ${TAG_NAME}
+  #   spec:
+  #     description: |
+  #       Allow the foreign data wrapper to access the remote database.
+  #     source:
+  #       - - role=${ROLE}
+  #         - app=${APP_NAME}${SUFFIX}
+  #         - env=${TAG_NAME}
+  #         - $namespace=${NAMESPACE}-${TAG_NAME}
+  #     destination:
+  #       - - ext:name=${NAME}${SUFFIX}
 
   - kind: DeploymentConfig
     apiVersion: v1
@@ -95,7 +135,7 @@ objects:
                 claimName: ${NAME}${SUFFIX}
           containers:
             - name: ${NAME}${SUFFIX}
-              image:  
+              image:
               ports:
                 - containerPort: 5432
                   protocol: TCP
@@ -259,11 +299,23 @@ parameters:
       PostgreSQL instance.
     required: true
     value: bc-reg-fdw
+
   - name: ROLE
     displayName: Role
     description: Role
     required: true
     value: fdw
+  - name: EVENT_PROCESSOR_ROLE
+    displayName: Event Processor Role
+    description: Event Processor Role
+    required: true
+    value: event-processor
+  - name: SCHEMA_SPY_ROLE
+    displayName: Schema-Spy Role
+    description: Schema-Spy Role
+    required: true
+    value: schema-spy-oracle
+
   - name: NAMESPACE
     displayName: The target namespace for the resources.
     required: true
@@ -324,22 +376,22 @@ parameters:
     displayName: Foreign Data Host Server
     description: The host:port of the foreign Oracle database server.
     required: true
-    value: 
+    value:
   - name: FDW_FOREIGN_NAME
     displayName: Foreign Database Name
     description: The name of the foreign Oracle database.
     required: true
-    value: 
+    value:
   - name: FDW_FOREIGN_CATALOG
     displayName: Foreign Database Catalog Name
     description: The name of the catalog of the foreign Oracle database.
     required: true
-    value: 
+    value:
   - name: FDW_FOREIGN_SCHEMA
     displayName: Foreign Data Schema
     description: Oracle schema from which to get the data.
     required: true
-    value: 
+    value:
   - name: FDW_USER
     displayName: Foreign Data Username
     description: Oracle username
@@ -358,14 +410,14 @@ parameters:
     description:
       Enable/Disable the PostGIS Extension.  Set to 'Y' to install and enable
       the extension, set to 'N' otherwise.
-    value: 'N'
+    value: "N"
   - name: PGCRYPTO_EXTENSION
     displayName: Enable pgcrypto Extension
     required: true
     description:
       Enable/Disable the pgcrypto Extension.  Set to 'Y' to install and enable
       the extension, set to 'N' otherwise.
-    value: 'N'
+    value: "N"
   - name: IMAGE_NAMESPACE
     displayName: Image Namespace
     required: true
@@ -395,21 +447,18 @@ parameters:
     value: 1Gi
   - name: PERSISTENT_VOLUME_CLASS
     displayName: Persistent Volume Class name
-    description:
-      The class of the volume; netapp-file-standard, netapp-block-standard
+    description: The class of the volume; netapp-file-standard, netapp-block-standard
     required: false
     value: netapp-file-standard
   - name: FDW_CIDR
     displayName: CIDR Range
-    description:
-      CIDR Range for the ExternalNetwork definition to limit accessible IPs.
+    description: CIDR Range for the ExternalNetwork definition to limit accessible IPs.
     required: true
-    value: 
+    value:
 
   - name: BACKUP
     displayName: Allow database backup
-    description:
-      Allow database backup; "true" or "false".
+    description: Allow database backup; "true" or "false".
     required: true
     value: "false"
 

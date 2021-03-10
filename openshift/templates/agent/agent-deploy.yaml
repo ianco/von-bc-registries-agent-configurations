@@ -5,72 +5,113 @@ metadata:
   name: ${NAME}${SUFFIX}
 objects:
 
-  - kind: NetworkSecurityPolicy
-    apiVersion: security.devops.gov.bc.ca/v1alpha1
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
     metadata:
-      name: pods-to-k8s-api${SUFFIX}
+      name: ${NAME}${SUFFIX}-allow-ingress
       labels:
-        name: pods-to-k8s-api${SUFFIX}
+        name: ${NAME}${SUFFIX}-allow-ingress
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
     spec:
       description: |
-        Allow pods to talk to the internal k8s api so deployments work.
-        This only needs to be specified once per environment.
-      source:
-        - - $namespace=${NAMESPACE}-${TAG_NAME}
-      destination:
-        - - int:network=internal-cluster-api-endpoint
+        Allow traffic from routes into the ${ROLE} container(s).
+      ingress:
+        - from:
+            - namespaceSelector:
+                matchLabels:
+                  network.openshift.io/policy-group: ingress
+      podSelector:
+        matchLabels:
+          role: ${ROLE}
+          app: ${APP_NAME}${SUFFIX}
+          env: ${TAG_NAME}
+      policyTypes:
+        - Ingress
 
-  - kind: ExternalNetwork
-    apiVersion: security.devops.gov.bc.ca/v1alpha1
-    metadata:
-      name: ${NAME}${SUFFIX}
-      network: ${NAME}${SUFFIX}
-      labels:
-        name: ${NAME}${SUFFIX}
-        network: ${NAME}${SUFFIX}
-        app: ${APP_NAME}${SUFFIX}
-        app-group: ${APP_GROUP}
-        env: ${TAG_NAME}
-    spec:
-      description: |
-        Define the network parameters for accessing remote agents.
-      entries:
-        - 0.0.0.0/0
-      servicePorts:
-        - tcp/9700:9799
-        - tcp/80
-        - tcp/443
-
-  - kind: NetworkSecurityPolicy
-    apiVersion: security.devops.gov.bc.ca/v1alpha1
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
     metadata:
       name: ${NAME}${SUFFIX}
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
         env: ${TAG_NAME}
     spec:
       description: |
-        Allow the agent pods to communicate with external agents, internal controller pods, and the wallet.
-      source:
-        - - role=${ROLE}
-          - app=${APP_NAME}${SUFFIX}
-          - env=${TAG_NAME}
-          - $namespace=${NAMESPACE}-${TAG_NAME}
-      destination:
-        - - ext:name=${NAME}${SUFFIX}
-        - - role=${CONTROLLER_ROLE}
-          - app=${APP_NAME}${SUFFIX}
-          - env=${TAG_NAME}
-          - $namespace=${NAMESPACE}-${TAG_NAME}
-        - - role=${WALLET_ROLE}
-          - app=${APP_NAME}${SUFFIX}
-          - env=${TAG_NAME}
-          - $namespace=${NAMESPACE}-${TAG_NAME}
+        Allow the controller to access the agent admin interface.
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  role: ${CONTROLLER_ROLE}
+                  app: ${APP_NAME}${SUFFIX}
+                  env: ${TAG_NAME}
+              namespaceSelector:
+                matchLabels:
+                  name: ${NAMESPACE_NAME}
+                  environment: ${TAG_NAME}
+          ports:
+            - protocol: TCP
+              port: ${{AGENT_ADMIN_PORT}}
+      podSelector:
+        matchLabels:
+          role: ${ROLE}
+          app: ${APP_NAME}${SUFFIX}
+          env: ${TAG_NAME}
+
+  # - kind: ExternalNetwork
+  #   apiVersion: security.devops.gov.bc.ca/v1alpha1
+  #   metadata:
+  #     name: ${NAME}${SUFFIX}
+  #     network: ${NAME}${SUFFIX}
+  #     labels:
+  #       name: ${NAME}${SUFFIX}
+  #       network: ${NAME}${SUFFIX}
+  #       app: ${APP_NAME}${SUFFIX}
+  #       app-group: ${APP_GROUP}
+  #       env: ${TAG_NAME}
+  #   spec:
+  #     description: |
+  #       Define the network parameters for accessing remote agents.
+  #     entries:
+  #       - 0.0.0.0/0
+  #     servicePorts:
+  #       - tcp/9700:9799
+  #       - tcp/80
+  #       - tcp/443
+
+  # - kind: NetworkSecurityPolicy
+  #   apiVersion: security.devops.gov.bc.ca/v1alpha1
+  #   metadata:
+  #     name: ${NAME}${SUFFIX}
+  #     labels:
+  #       name: ${NAME}${SUFFIX}
+  #       app: ${APP_NAME}${SUFFIX}
+  #       app-group: ${APP_GROUP}
+  #       env: ${TAG_NAME}
+  #   spec:
+  #     description: |
+  #       Allow the agent pods to communicate with external agents, internal controller pods, and the wallet.
+  #     source:
+  #       - - role=${ROLE}
+  #         - app=${APP_NAME}${SUFFIX}
+  #         - env=${TAG_NAME}
+  #         - $namespace=${NAMESPACE}-${TAG_NAME}
+  #     destination:
+  #       - - ext:name=${NAME}${SUFFIX}
+  #       - - role=${CONTROLLER_ROLE}
+  #         - app=${APP_NAME}${SUFFIX}
+  #         - env=${TAG_NAME}
+  #         - $namespace=${NAMESPACE}-${TAG_NAME}
+  #       - - role=${WALLET_ROLE}
+  #         - app=${APP_NAME}${SUFFIX}
+  #         - env=${TAG_NAME}
+  #         - $namespace=${NAMESPACE}-${TAG_NAME}
 
   - kind: Service
     apiVersion: v1
@@ -369,6 +410,7 @@ parameters:
     description: The name assigned to all the objects defined in this template.
     required: true
     value: agent
+
   - name: ROLE
     displayName: Role
     description: Role
@@ -384,6 +426,7 @@ parameters:
     description: The name given to the wallet role.
     required: true
     value: wallet
+
   - name: NAMESPACE
     displayName: The target namespace for the resources.
     required: true
