@@ -34,6 +34,9 @@ objects:
         type: Docker
         dockerStrategy:
           dockerfilePath: ${DOCKER_FILE_PATH}
+          from:
+            kind: DockerImage
+            name: "${SOURCE_IMAGE_REGISTRY}${SOURCE_IMAGE_NAME}"
       output:
         to:
           kind: ImageStreamTag
@@ -77,7 +80,7 @@ parameters:
     displayName: Git Reference
     description: The git reference or branch.
     required: true
-    value: master
+    value: e821423ec0ce66502a47cb8f04cd3b84af92aa98
   - name: SOURCE_CONTEXT_DIR
     displayName: Source Context Directory
     description: The source context directory.
@@ -93,6 +96,16 @@ parameters:
     description: The path to the docker file.
     required: true
     value: docker/mara-app/Dockerfile
+  - name: SOURCE_IMAGE_REGISTRY
+    displayName: Source Image Registry
+    description: The name of the Source Image Registry.
+    required: false
+    value: docker-remote.artifacts.developer.gov.bc.ca/
+  - name: SOURCE_IMAGE_NAME
+    displayName: Source Image Name
+    description: The name of the Docker image to be used for the build. Overrides the FROM instruction in the Dockerfile.
+    required: false
+    value: ubuntu:16.04
   - name: CPU_LIMIT
     displayName: Resources CPU Limit
     description: The resources CPU limit (in cores) for this build.
