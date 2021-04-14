@@ -80,7 +80,7 @@ parameters:
     displayName: Git Reference
     description: The git reference or branch.
     required: true
-    value: e821423ec0ce66502a47cb8f04cd3b84af92aa98
+    value: master
   - name: SOURCE_CONTEXT_DIR
     displayName: Source Context Directory
     description: The source context directory.
