@@ -12,7 +12,8 @@ SOURCE_IMAGE_NAME=schema-spy-with-oracle-jdbc
 APPLICATION_DOMAIN=schema-spy-oracle-primary-dev.apps.silver.devops.gov.bc.ca
 OUTPUT_PATH=/var/www/html/doc
 # SCHEMASPY_USER=[a-zA-Z_][a-zA-Z0-9_]{10}
-# SCHEMASPY_PASSWORD=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
+# SCHEMASPY_PLAIN_PASSWORD=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
+# SCHEMASPY_PASSWORD=
 TAG_NAME=dev
 DATABASE_DEPLOYMENT_NAME=bc-reg-fdw
 DATABASE_TYPE=orathin
@@ -20,6 +21,8 @@ DATABASE_DRIVER=lib/ora-jdbc.jar
 CONFIG_FILE_NAME=Caddyfile
 CONFIG_MAP_NAME=schema-spy-oracle-caddy-conf
 CONFIG_MOUNT_PATH=/etc/
+SERVER_HOST=0.0.0.0
+SERVER_PORT=8080
 CPU_REQUEST=0m
 CPU_LIMIT=0m
 MEMORY_REQUEST=0Mi
