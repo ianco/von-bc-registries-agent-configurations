@@ -1,3 +1,4 @@
+#! /bin/bash
 _includeFile=$(type -p overrides.inc)
 # Import ocFunctions.inc for getSecret
 _ocFunctions=$(type -p ocFunctions.inc)
