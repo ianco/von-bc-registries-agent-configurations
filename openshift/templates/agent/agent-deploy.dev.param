@@ -7,12 +7,12 @@
 # SUFFIX=-primary
 # APP_NAME=BcRegistriesAgent
 # APP_GROUP=primary-instance
-APPLICATION_DOMAIN=bc-reg-agent-primary-dev.apps.silver.devops.gov.bc.ca 
+APPLICATION_DOMAIN=bc-reg-agent-dev.orgbook.gov.bc.ca 
 # ROUTE_TIMEOUT=120s
 # IMAGE_NAMESPACE=7cba16-tools
 TAG_NAME=dev
 # AGENT_LABEL_NAME=bcreg-agent
-AGENT_BASE_URL=https://bc-reg-agent-primary-dev.apps.silver.devops.gov.bc.ca 
+AGENT_BASE_URL=https://bc-reg-agent-dev.orgbook.gov.bc.ca 
 # WEBHOOK_URL=http://bcreg-controller-primary:8080/api/agentcb
 # AGENT_ADMIN_PORT=8024
 # ADMIN_API_KEY=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
