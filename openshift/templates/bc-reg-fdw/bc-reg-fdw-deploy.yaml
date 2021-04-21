@@ -48,45 +48,6 @@ objects:
           app: ${APP_NAME}${SUFFIX}
           env: ${TAG_NAME}
 
-  # - kind: ExternalNetwork
-  #   apiVersion: security.devops.gov.bc.ca/v1alpha1
-  #   metadata:
-  #     name: ${NAME}${SUFFIX}
-  #     network: ${NAME}${SUFFIX}
-  #     labels:
-  #       name: ${NAME}${SUFFIX}
-  #       network: ${NAME}${SUFFIX}
-  #       app: ${APP_NAME}${SUFFIX}
-  #       app-group: ${APP_GROUP}
-  #       env: ${TAG_NAME}
-  #   spec:
-  #     description: |
-  #       Define the network parameters for accessing the remote database.
-  #     entries:
-  #       - ${FDW_CIDR}
-  #     servicePorts:
-  #       - tcp/1521
-
-  # - kind: NetworkSecurityPolicy
-  #   apiVersion: security.devops.gov.bc.ca/v1alpha1
-  #   metadata:
-  #     name: ${NAME}${SUFFIX}
-  #     labels:
-  #       name: ${NAME}${SUFFIX}
-  #       app: ${APP_NAME}${SUFFIX}
-  #       app-group: ${APP_GROUP}
-  #       env: ${TAG_NAME}
-  #   spec:
-  #     description: |
-  #       Allow the foreign data wrapper to access the remote database.
-  #     source:
-  #       - - role=${ROLE}
-  #         - app=${APP_NAME}${SUFFIX}
-  #         - env=${TAG_NAME}
-  #         - $namespace=${NAMESPACE}-${TAG_NAME}
-  #     destination:
-  #       - - ext:name=${NAME}${SUFFIX}
-
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:

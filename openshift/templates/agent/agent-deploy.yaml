@@ -63,56 +63,6 @@ objects:
           role: ${ROLE}
           app: ${APP_NAME}${SUFFIX}
           env: ${TAG_NAME}
-
-  # - kind: ExternalNetwork
-  #   apiVersion: security.devops.gov.bc.ca/v1alpha1
-  #   metadata:
-  #     name: ${NAME}${SUFFIX}
-  #     network: ${NAME}${SUFFIX}
-  #     labels:
-  #       name: ${NAME}${SUFFIX}
-  #       network: ${NAME}${SUFFIX}
-  #       app: ${APP_NAME}${SUFFIX}
-  #       app-group: ${APP_GROUP}
-  #       env: ${TAG_NAME}
-  #   spec:
-  #     description: |
-  #       Define the network parameters for accessing remote agents.
-  #     entries:
-  #       - 0.0.0.0/0
-  #     servicePorts:
-  #       - tcp/9700:9799
-  #       - tcp/80
-  #       - tcp/443
-
-  # - kind: NetworkSecurityPolicy
-  #   apiVersion: security.devops.gov.bc.ca/v1alpha1
-  #   metadata:
-  #     name: ${NAME}${SUFFIX}
-  #     labels:
-  #       name: ${NAME}${SUFFIX}
-  #       app: ${APP_NAME}${SUFFIX}
-  #       app-group: ${APP_GROUP}
-  #       env: ${TAG_NAME}
-  #   spec:
-  #     description: |
-  #       Allow the agent pods to communicate with external agents, internal controller pods, and the wallet.
-  #     source:
-  #       - - role=${ROLE}
-  #         - app=${APP_NAME}${SUFFIX}
-  #         - env=${TAG_NAME}
-  #         - $namespace=${NAMESPACE}-${TAG_NAME}
-  #     destination:
-  #       - - ext:name=${NAME}${SUFFIX}
-  #       - - role=${CONTROLLER_ROLE}
-  #         - app=${APP_NAME}${SUFFIX}
-  #         - env=${TAG_NAME}
-  #         - $namespace=${NAMESPACE}-${TAG_NAME}
-  #       - - role=${WALLET_ROLE}
-  #         - app=${APP_NAME}${SUFFIX}
-  #         - env=${TAG_NAME}
-  #         - $namespace=${NAMESPACE}-${TAG_NAME}
-
   - kind: Service
     apiVersion: v1
     metadata:

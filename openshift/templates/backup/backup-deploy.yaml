@@ -5,28 +5,6 @@ metadata:
   name: ${NAME}${SUFFIX}-deployment-template
 objects:
 
-  # - kind: NetworkSecurityPolicy
-  #   apiVersion: security.devops.gov.bc.ca/v1alpha1
-  #   metadata:
-  #     name: ${NAME}${SUFFIX}
-  #     labels:
-  #       name: ${NAME}${SUFFIX}
-  #       app: ${APP_NAME}${SUFFIX}
-  #       app-group: ${APP_GROUP}
-  #       env: ${TAG_NAME}
-  #   spec:
-  #     description: |
-  #       Allow the backup container to communicate with database pods.
-  #     source:
-  #       - - role=${ROLE}
-  #         - app=${APP_NAME}${SUFFIX}
-  #         - env=${TAG_NAME}
-  #         - $namespace=${NAMESPACE}-${TAG_NAME}
-  #     destination:
-  #       - - backup=true
-  #         - env=${TAG_NAME}
-  #         - $namespace=${NAMESPACE}-${TAG_NAME}
-
   - kind: PersistentVolumeClaim
     apiVersion: v1
     metadata:
