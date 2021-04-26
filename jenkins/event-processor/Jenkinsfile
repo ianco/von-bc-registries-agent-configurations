@@ -2,7 +2,7 @@ def PIPELINE_NAME = "event-processor"
 
 def LIB_NAME= "bcreg-agent-lib"
 def LIB_REPO = "https://github.com/bcgov/von-bc-registries-agent-configurations.git"
-def LIB_BRANCH = "feature/ocp4"
+def LIB_BRANCH = "master"
 library identifier: "${LIB_NAME}@${LIB_BRANCH}", 
         retriever: modernSCM(
           [$class: 'GitSCMSource',
