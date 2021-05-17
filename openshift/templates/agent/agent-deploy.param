@@ -15,6 +15,7 @@ AGENT_LABEL_NAME=bcreg-agent
 AGENT_BASE_URL=https://bc-reg-agent-dev.orgbook.gov.bc.ca 
 WEBHOOK_URL=http://bcreg-controller-primary:8080/api/agentcb
 AGENT_ADMIN_PORT=8024
+API_HOST=bcreg-controller
 # ADMIN_API_KEY=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 AGENT_HTTP_PORT=8021
 AGENT_WS_PORT=8023

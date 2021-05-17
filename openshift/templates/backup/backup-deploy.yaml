@@ -12,6 +12,7 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         role: ${ROLE}
         env: ${TAG_NAME}
@@ -30,6 +31,7 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         role: ${ROLE}
         env: ${TAG_NAME}
@@ -48,6 +50,7 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         role: ${ROLE}
         env: ${TAG_NAME}
@@ -62,9 +65,15 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         role: ${ROLE}
         env: ${TAG_NAME}
+      annotations:
+        description: Defines how to deploy the application server
+        app.openshift.io/connects-to: >-
+          [{"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"${WALLET_DB_HOST}${SUFFIX}"},
+          {"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"${DATABASE_HOST}${SUFFIX}"}]
       annotations:
         description: Defines how to deploy the ${NAME}${SUFFIX} server
     spec:
@@ -90,6 +99,7 @@ objects:
           labels:
             name: ${NAME}${SUFFIX}
             app: ${APP_NAME}${SUFFIX}
+            app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
             app-group: ${APP_GROUP}
             role: ${ROLE}
             env: ${TAG_NAME}
@@ -126,23 +136,23 @@ objects:
                 - name: EVENT_DB_PRIMARY_USER
                   valueFrom:
                     secretKeyRef:
-                      name: ${DATABASE_DEPLOYMENT_NAME}${SUFFIX}
+                      name: ${DATABASE_HOST}${SUFFIX}
                       key: ${DATABASE_USER_KEY_NAME}
                 - name: EVENT_DB_PRIMARY_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: ${DATABASE_DEPLOYMENT_NAME}${SUFFIX}
+                      name: ${DATABASE_HOST}${SUFFIX}
                       key: ${DATABASE_PASSWORD_KEY_NAME}
 
                 - name: WALLET_PRIMARY_USER
                   valueFrom:
                     secretKeyRef:
-                      name: ${WALLET_DB_HOST_NAME}${SUFFIX}
+                      name: ${WALLET_DB_HOST}${SUFFIX}
                       key: ${DATABASE_USER_KEY_NAME}
                 - name: WALLET_PRIMARY_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: ${WALLET_DB_HOST_NAME}${SUFFIX}
+                      name: ${WALLET_DB_HOST}${SUFFIX}
                       key: ${DATABASE_PASSWORD_KEY_NAME}
 
                 - name: WEBHOOK_URL
@@ -218,14 +228,14 @@ parameters:
     description: The TAG name for this environment, e.g., dev, test, prod
     required: true
     value: dev
-  - name: DATABASE_DEPLOYMENT_NAME
+  - name: DATABASE_HOST
     displayName: Database Deployment Name
     description:
       The name associated to the database deployment resources.  In particular,
       this is used to wire up the credentials associated to the database.
     required: true
     value: event-db
-  - name: WALLET_DB_HOST_NAME
+  - name: WALLET_DB_HOST
     displayName: Wallet Database Hostname
     description:
       The name associated to the wallet database deployment resources.  In
@@ -236,14 +246,14 @@ parameters:
     displayName: Database User Key Name
     description:
       The datbase user key name stoed in database deployment resources specified
-      by DATABASE_DEPLOYMENT_NAME.
+      by DATABASE_HOST.
     required: true
     value: database-user
   - name: DATABASE_PASSWORD_KEY_NAME
     displayName: Database Password Key Name
     description:
       The database password key name stored in database deployment resources
-      specified by DATABASE_DEPLOYMENT_NAME.
+      specified by DATABASE_HOST.
     required: true
     value: database-password
   - name: BACKUP_STRATEGY

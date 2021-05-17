@@ -15,7 +15,7 @@ APPLICATION_DOMAIN=schema-spy-oracle-primary-test.apps.silver.devops.gov.bc.ca
 # SCHEMASPY_PLAIN_PASSWORD=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 # SCHEMASPY_PASSWORD=
 TAG_NAME=test
-# DATABASE_DEPLOYMENT_NAME=bc-reg-fdw
+# DATABASE_HOST=bc-reg-fdw
 # DATABASE_TYPE=orathin
 # DATABASE_DRIVER=lib/ora-jdbc.jar
 # CONFIG_FILE_NAME=Caddyfile

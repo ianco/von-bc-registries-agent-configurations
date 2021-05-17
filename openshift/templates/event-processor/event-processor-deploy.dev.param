@@ -27,6 +27,7 @@ TAG_NAME=dev
 # MARA_DB_HOST=event-processor-log-db-primary
 # MARA_DB_PORT=5432
 # MARA_DB_DATABASE=mara_db
+# API_HOST=bcreg-controller
 # START_CRON=
 # WEBHOOK_URL=
 # WEBHOOK_LEVEL=2

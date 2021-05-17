@@ -14,6 +14,7 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         role: ${ROLE}
         env: ${TAG_NAME}
@@ -29,6 +30,7 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         role: ${ROLE}
         env: ${TAG_NAME}
@@ -48,11 +50,17 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         role: ${ROLE}
         env: ${TAG_NAME}
       annotations:
-        description: Defines how to deploy the container.
+        description: Defines how to deploy the application server
+        app.openshift.io/connects-to: >-
+          [{"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"${MARA_DB_HOST}"},
+          {"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"${EVENT_PROC_DB_HOST}"},
+          {"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"${BC_REG_DB_HOST}"},
+          {"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"${API_HOST}${SUFFIX}"}]
     spec:
       strategy:
         type: Rolling
@@ -82,6 +90,7 @@ objects:
           labels:
             name: ${NAME}${SUFFIX}
             app: ${APP_NAME}${SUFFIX}
+            app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
             app-group: ${APP_GROUP}
             role: ${ROLE}
             env: ${TAG_NAME}
@@ -311,6 +320,11 @@ parameters:
     description: Mara Database Name.
     required: true
     value: mara_db
+  - name: API_HOST
+    displayName: API HOST
+    description: The hostname of the api service.
+    required: true
+    value: bcreg-controller
   - name: START_CRON
     displayName: Start Cron Jobs
     description: Start go-crond and load the cron jobs from the CRON_FOLDER.
