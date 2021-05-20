@@ -14,6 +14,7 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         role: ${ROLE}
         env: ${TAG_NAME}
@@ -29,6 +30,7 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         role: ${ROLE}
         env: ${TAG_NAME}
@@ -48,11 +50,17 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
         role: ${ROLE}
         env: ${TAG_NAME}
       annotations:
-        description: Defines how to deploy the container.
+        description: Defines how to deploy the application server
+        app.openshift.io/connects-to: >-
+          [{"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"${MARA_DB_HOST}${SUFFIX}"},
+          {"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"${EVENT_PROC_DB_HOST}${SUFFIX}"},
+          {"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"${BC_REG_DB_HOST}${SUFFIX}"},
+          {"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"${API_HOST}${SUFFIX}"}]
     spec:
       strategy:
         type: Rolling
@@ -82,6 +90,7 @@ objects:
           labels:
             name: ${NAME}${SUFFIX}
             app: ${APP_NAME}${SUFFIX}
+            app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
             app-group: ${APP_GROUP}
             role: ${ROLE}
             env: ${TAG_NAME}
@@ -100,7 +109,7 @@ objects:
                 - name: CONTROLLER_URL
                   value: ${CONTROLLER_URL}
                 - name: BC_REG_DB_HOST
-                  value: ${BC_REG_DB_HOST}
+                  value: ${BC_REG_DB_HOST}${SUFFIX}
                 - name: BC_REG_DB_PORT
                   value: ${BC_REG_DB_PORT}
                 - name: BC_REG_DB_DATABASE
@@ -108,15 +117,15 @@ objects:
                 - name: BC_REG_DB_USER
                   valueFrom:
                     secretKeyRef:
-                      name: ${BC_REG_DB_HOST}
+                      name: ${BC_REG_DB_HOST}${SUFFIX}
                       key: database-user
                 - name: BC_REG_DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: ${BC_REG_DB_HOST}
+                      name: ${BC_REG_DB_HOST}${SUFFIX}
                       key: database-password
                 - name: EVENT_PROC_DB_HOST
-                  value: ${EVENT_PROC_DB_HOST}
+                  value: ${EVENT_PROC_DB_HOST}${SUFFIX}
                 - name: EVENT_PROC_DB_PORT
                   value: ${EVENT_PROC_DB_PORT}
                 - name: EVENT_PROC_DB_DATABASE
@@ -124,15 +133,15 @@ objects:
                 - name: EVENT_PROC_DB_USER
                   valueFrom:
                     secretKeyRef:
-                      name: ${EVENT_PROC_DB_HOST}
+                      name: ${EVENT_PROC_DB_HOST}${SUFFIX}
                       key: database-user
                 - name: EVENT_PROC_DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: ${EVENT_PROC_DB_HOST}
+                      name: ${EVENT_PROC_DB_HOST}${SUFFIX}
                       key: database-password
                 - name: MARA_DB_HOST
-                  value: ${MARA_DB_HOST}
+                  value: ${MARA_DB_HOST}${SUFFIX}
                 - name: MARA_DB_PORT
                   value: ${MARA_DB_PORT}
                 - name: MARA_DB_DATABASE
@@ -140,12 +149,12 @@ objects:
                 - name: MARA_DB_USER
                   valueFrom:
                     secretKeyRef:
-                      name: ${MARA_DB_HOST}
+                      name: ${MARA_DB_HOST}${SUFFIX}
                       key: database-user
                 - name: MARA_DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: ${MARA_DB_HOST}
+                      name: ${MARA_DB_HOST}${SUFFIX}
                       key: database-password
                 - name: START_CRON
                   value: ${START_CRON}
@@ -311,6 +320,11 @@ parameters:
     description: Mara Database Name.
     required: true
     value: mara_db
+  - name: API_HOST
+    displayName: API HOST
+    description: The hostname of the api service.
+    required: true
+    value: bcreg-controller
   - name: START_CRON
     displayName: Start Cron Jobs
     description: Start go-crond and load the cron jobs from the CRON_FOLDER.
