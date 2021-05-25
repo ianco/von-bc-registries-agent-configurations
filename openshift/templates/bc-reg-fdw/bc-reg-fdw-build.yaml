@@ -91,12 +91,12 @@ parameters:
     displayName: Git Repo URL
     description: The URL to your GIT repo.
     required: true
-    value: https://github.com/WadeBarnes/openshift-postgresql-oracle_fdw.git
+    value: https://github.com/bcgov/openshift-postgresql-oracle_fdw.git
   - name: GIT_REF
     displayName: Git Reference
     description: The git reference or branch.
-    required: true
-    value: feature/update
+    required: false
+    value:
   - name: SOURCE_CONTEXT_DIR
     displayName: Source Context Directory
     description: The source context directory.
