@@ -4,10 +4,10 @@
 # Template File: ../openshift/templates/wallet/wallet-deploy.json
 #=========================================================
 # NAME=wallet
-# SUFFIX=-indy-cat
+# SUFFIX=-primary
 # APP_NAME=BcRegistriesAgent
-# APP_GROUP=indy-catalyst
-# IMAGE_NAMESPACE=devex-von-bc-registries-agent-tools
+# APP_GROUP=primary-instance
+# IMAGE_NAMESPACE=7cba16-tools
 # SOURCE_IMAGE_NAME=db
 TAG_NAME=test
 # POSTGRESQL_DATABASE_NAME=default_wallet
@@ -15,8 +15,8 @@ TAG_NAME=test
 # POSTGRESQL_PASSWORD=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 # POSTGRESQL_ADMIN_PASSWORD=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 # MOUNT_PATH=/var/lib/pgsql/data
-# PERSISTENT_VOLUME_SIZE=60Gi
-PERSISTENT_VOLUME_CLASS=netapp-file-standard
+# PERSISTENT_VOLUME_SIZE=5Gi
+# PERSISTENT_VOLUME_CLASS=netapp-file-standard
 # CPU_REQUEST=10m
 # CPU_LIMIT=1000m
 # MEMORY_REQUEST=10Mi

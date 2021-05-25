@@ -4,15 +4,15 @@
 # Template File: ../openshift/templates/bcreg-controller/bcreg-controller-deploy.json
 #=========================================================
 NAME=bcreg-controller
-SUFFIX=-indy-cat
+SUFFIX=-primary
 APP_NAME=BcRegistriesAgent
-APP_GROUP=indy-catalyst
-IMAGE_NAMESPACE=devex-von-bc-registries-agent-tools
+APP_GROUP=primary-instance
+IMAGE_NAMESPACE=7cba16-tools
 TAG_NAME=dev
 CONFIG_ROOT=../config
 HOST_PORT=8080
 ENVIRONMENT=default
-AGENT_SERVICE_NAME=agent
+AGENT_HOST=agent
 AGENT_ADMIN_PORT=8024
 CR_AGENT_ADMIN_URL=
 CR_ADMIN_API_KEY=

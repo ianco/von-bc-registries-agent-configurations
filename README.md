@@ -2,7 +2,7 @@
 
 # BC Registries Agent Configurations
 
-This repository contains the [openshift-developer-tools](https://github.com/BCDevOps/openshift-developer-tools/tree/master/bin) compatible OpenShift configurations for the [indy-catalyst](https://github.com/bcgov/indy-catalyst) compatible instance of the [von-bc-registries-agent](https://github.com/bcgov/von-bc-registries-agent).
+This repository contains the [openshift-developer-tools](https://github.com/BCDevOps/openshift-developer-tools/tree/master/bin) compatible OpenShift configurations for the [aries-vcr](https://github.com/bcgov/aries-vcr) compatible instance of the [von-bc-registries-agent](https://github.com/bcgov/von-bc-registries-agent).
 
 For information on how to use these configurations with the `openshift-developer-tools scripts` please refer to the documentation; [README.md](https://github.com/BCDevOps/openshift-developer-tools/blob/master/bin/README.md).
 

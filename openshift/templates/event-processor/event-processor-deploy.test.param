@@ -1,31 +1,38 @@
 #=========================================================
 # OpenShift template parameters for:
 # Component: .
-# Template File: ../openshift/templates/event-processor/event-processor-deploy.json
+# Template File: ../openshift/templates/event-processor/event-processor-deploy.yaml
 #=========================================================
 # NAME=event-processor
-# SUFFIX=-indy-cat
+# ROLE=event-processor
+# FDW_ROLE=fdw
+# CONTROLLER_ROLE=controller
+# EVENT_DB_ROLE=event-db
+# EVENT_PROCESSOR_LOG_ROLE=event-processor-log
+# NAMESPACE=7cba16
+# SUFFIX=-primary
 # APP_NAME=BcRegistriesAgent
-# APP_GROUP=indy-catalyst
-# IMAGE_NAMESPACE=devex-von-bc-registries-agent-tools
+# APP_GROUP=primary-instance
+# IMAGE_NAMESPACE=7cba16-tools
 TAG_NAME=test
 # HOST_NAME=0.0.0.0
 # HOST_PORT=8080
-# CONTROLLER_URL=http://bcreg-controller-indy-cat:8080
-# BC_REG_DB_HOST=bc-reg-fdw-indy-cat
+# CONTROLLER_URL=http://bcreg-controller-primary:8080
+# BC_REG_DB_HOST=bc-reg-fdw
 # BC_REG_DB_PORT=5432
 # BC_REG_DB_DATABASE=BC_REGISTRIES
-# EVENT_PROC_DB_HOST=event-db-indy-cat
+# EVENT_PROC_DB_HOST=event-db
 # EVENT_PROC_DB_PORT=5432
 # EVENT_PROC_DB_DATABASE=bc_reg_db
-# MARA_DB_HOST=event-processor-log-db-indy-cat
+# MARA_DB_HOST=event-processor-log-db
 # MARA_DB_PORT=5432
 # MARA_DB_DATABASE=mara_db
+# API_HOST=bcreg-controller
 # START_CRON=
 # WEBHOOK_URL=
 # WEBHOOK_LEVEL=2
-PROJECT_NAME=devex-von-bc-registries-agent-test
-FRIENDLY_PROJECT_NAME=BC Registries ICIA (test)
+PROJECT_NAME=7cba16-test
+FRIENDLY_PROJECT_NAME=BC Registries Agent (test)
 # NOTIFY_OF_CREDENTIAL_POSTING_ERRORS=false
 # MAX_CREDS_REQUESTS=80
 # CREDS_REQUEST_SIZE=1

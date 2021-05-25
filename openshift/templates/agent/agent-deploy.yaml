@@ -4,6 +4,65 @@ apiVersion: v1
 metadata:
   name: ${NAME}${SUFFIX}
 objects:
+
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
+    metadata:
+      name: ${NAME}${SUFFIX}-allow-ingress
+      labels:
+        name: ${NAME}${SUFFIX}-allow-ingress
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        role: ${ROLE}
+        env: ${TAG_NAME}
+    spec:
+      description: |
+        Allow traffic from routes into the ${ROLE} container(s).
+      ingress:
+        - from:
+            - namespaceSelector:
+                matchLabels:
+                  network.openshift.io/policy-group: ingress
+      podSelector:
+        matchLabels:
+          role: ${ROLE}
+          app: ${APP_NAME}${SUFFIX}
+          env: ${TAG_NAME}
+      policyTypes:
+        - Ingress
+
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
+    metadata:
+      name: ${NAME}${SUFFIX}
+      labels:
+        name: ${NAME}${SUFFIX}
+        app: ${APP_NAME}${SUFFIX}
+        app-group: ${APP_GROUP}
+        role: ${ROLE}
+        env: ${TAG_NAME}
+    spec:
+      description: |
+        Allow the controller to access the agent admin interface.
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  role: ${CONTROLLER_ROLE}
+                  app: ${APP_NAME}${SUFFIX}
+                  env: ${TAG_NAME}
+              namespaceSelector:
+                matchLabels:
+                  name: ${NAMESPACE}
+                  environment: ${TAG_NAME}
+          ports:
+            - protocol: TCP
+              port: ${{AGENT_ADMIN_PORT}}
+      podSelector:
+        matchLabels:
+          role: ${ROLE}
+          app: ${APP_NAME}${SUFFIX}
+          env: ${TAG_NAME}
   - kind: Service
     apiVersion: v1
     metadata:
@@ -11,7 +70,10 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
+        env: ${TAG_NAME}
     spec:
       ports:
         - name: ${NAME}-admin
@@ -36,7 +98,10 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
+        env: ${TAG_NAME}
       annotations:
         haproxy.router.openshift.io/timeout: ${ROUTE_TIMEOUT}
     spec:
@@ -58,7 +123,10 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
+        env: ${TAG_NAME}
     stringData:
       key: ${WALLET_KEY}
       seed: ${AGENT_WALLET_SEED}
@@ -72,7 +140,10 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
+        env: ${TAG_NAME}
     stringData:
       admin-api-key: ${ADMIN_API_KEY}
     type: Opaque
@@ -84,7 +155,15 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
+        env: ${TAG_NAME}
+      annotations:
+        description: Defines how to deploy the application server
+        app.openshift.io/connects-to: >-
+          [{"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"${WALLET_HOST}${SUFFIX}"},
+          {"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"${API_HOST}${SUFFIX}"}]
     spec:
       replicas: 1
       selector:
@@ -97,7 +176,10 @@ objects:
           labels:
             name: ${NAME}${SUFFIX}
             app: ${APP_NAME}${SUFFIX}
+            app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
             app-group: ${APP_GROUP}
+            role: ${ROLE}
+            env: ${TAG_NAME}
         spec:
           containers:
             - name: ${NAME}${SUFFIX}
@@ -273,7 +355,10 @@ objects:
       labels:
         name: ${NAME}${SUFFIX}
         app: ${APP_NAME}${SUFFIX}
+        app.kubernetes.io/part-of: ${APP_NAME}${SUFFIX}
         app-group: ${APP_GROUP}
+        role: ${ROLE}
+        env: ${TAG_NAME}
     spec:
       scaleTargetRef:
         kind: DeploymentConfig
@@ -287,11 +372,32 @@ parameters:
     description: The name assigned to all the objects defined in this template.
     required: true
     value: agent
+
+  - name: ROLE
+    displayName: Role
+    description: Role
+    required: true
+    value: agent
+  - name: CONTROLLER_ROLE
+    displayName: Controller Role
+    description: The name given to the controller role.
+    required: true
+    value: controller
+  - name: WALLET_ROLE
+    displayName: Wallet Role
+    description: The name given to the wallet role.
+    required: true
+    value: wallet
+
+  - name: NAMESPACE
+    displayName: The target namespace for the resources.
+    required: true
+    value: 7cba16
   - name: SUFFIX
     displayName: Suffix
     description: A name suffix used for all objects.
     required: false
-    value: -indy-cat
+    value: -primary
   - name: APP_NAME
     displayName: App Name
     description: Used to group components together in the OpenShift console.
@@ -301,12 +407,12 @@ parameters:
     displayName: App Group
     description: Used to group components together.
     required: true
-    value: indy-catalyst
+    value: primary-instance
   - name: APPLICATION_DOMAIN
     displayName: Application Hostname
     description: The exposed hostname that will route to the service, if left blank a value will be defaulted.
     required: false
-    value: bc-reg-agent-dev.orgbook.gov.bc.ca 
+    value: bc-reg-agent-primary-dev.apps.silver.devops.gov.bc.ca
   - name: ROUTE_TIMEOUT
     displayName: Route Timeout
     description: The timeout for the application route.  When this timeout is exceeded the application's route will respond with a 504 Gateway Timeout error.
@@ -315,7 +421,7 @@ parameters:
   - name: IMAGE_NAMESPACE
     displayName: Namespace containing application images.
     required: true
-    value: devex-von-bc-registries-agent-tools
+    value: 7cba16-tools
   - name: TAG_NAME
     displayName: Environment TAG name
     description: The TAG name for this environment, e.g., dev, test, prod.
@@ -330,17 +436,22 @@ parameters:
     displayName: Agent endpoint
     description: The endpoint of the agent
     required: true
-    value: https://bc-reg-agent-dev.orgbook.gov.bc.ca 
+    value: https://bc-reg-agent-primary-dev.apps.silver.devops.gov.bc.ca
   - name: WEBHOOK_URL
     displayName: Webhook URL
     description: The webhook endpoint
     required: true
-    value: http://bcreg-controller-indy-cat:8080/api/agentcb
+    value: http://bcreg-controller-primary:8080/api/agentcb
   - name: AGENT_ADMIN_PORT
     displayName: Agent Admin Port
     description: The admin port on which the service will listen.
     required: true
     value: "8024"
+  - name: API_HOST
+    displayName: API HOST
+    description: The hostname of the api service.
+    required: true
+    value: bcreg-controller
   - name: ADMIN_API_KEY
     displayName: Agent Admin API Key
     description: The key used to authenticate client requests to the admin api.

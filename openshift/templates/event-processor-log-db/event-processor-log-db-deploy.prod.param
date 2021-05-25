@@ -4,10 +4,10 @@
 # Template File: ../openshift/templates/event-processor-log-db/event-processor-log-db-deploy.json
 #=========================================================
 # NAME=event-processor-log-db
-# SUFFIX=-indy-cat
+# SUFFIX=-primary
 # APP_NAME=BcRegistriesAgent
-# APP_GROUP=indy-catalyst
-# IMAGE_NAMESPACE=devex-von-bc-registries-agent-tools
+# APP_GROUP=primary-instance
+# IMAGE_NAMESPACE=7cba16-tools
 # SOURCE_IMAGE_NAME=db
 TAG_NAME=prod
 # POSTGRESQL_DATABASE_NAME=mara_db
@@ -16,7 +16,7 @@ TAG_NAME=prod
 # POSTGRESQL_ADMIN_PASSWORD=[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}
 # MOUNT_PATH=/var/lib/pgsql/data
 PERSISTENT_VOLUME_SIZE=10Gi
-# PERSISTENT_VOLUME_CLASS=gluster-file-db
+# PERSISTENT_VOLUME_CLASS=netapp-file-standard
 # CPU_REQUEST=10m
 # CPU_LIMIT=250m
 # MEMORY_REQUEST=10Mi
