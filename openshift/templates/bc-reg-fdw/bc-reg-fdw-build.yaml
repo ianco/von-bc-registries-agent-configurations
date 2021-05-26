@@ -34,7 +34,7 @@ objects:
         contextDir: ${SOURCE_CONTEXT_DIR}
         secrets:
         - secret:
-            name: etc-pki-entitlement
+            name: ${ENTITLEMENT_SECRET_NAME}
           destinationDir: etc-pki-entitlement
         configMaps:
         - configMap:
@@ -133,6 +133,18 @@ parameters:
       spec in the Docker file.
     required: false
     value: latest
+  - name: SOURCE_IMAGE_TAG
+    displayName: Source Image Tag
+    description:
+      The tag of the source image.  If specified, this overrides the 'FROM'
+      spec in the Docker file.
+    required: false
+    value: latest
+  - name: ENTITLEMENT_SECRET_NAME
+    displayName: Entitlement Secret Name
+    description: The name of the secret containing the key for the entitlement.
+    required: true
+    value: platform-services-controlled-etc-pki-entitlement
   - name: CPU_LIMIT
     displayName: Resources CPU Limit
     description: The resources CPU limit (in cores) for this build; 0 = use default.
