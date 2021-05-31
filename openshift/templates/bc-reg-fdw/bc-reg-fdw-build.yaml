@@ -38,10 +38,10 @@ objects:
           destinationDir: etc-pki-entitlement
         configMaps:
         - configMap:
-            name: rhsm-conf
+            name: ${RHSM_CONF_CONFIG_MAP}
           destinationDir: rhsm-conf
         - configMap:
-            name: rhsm-ca
+            name: ${RHSM_CA_CONFIG_MAP}
           destinationDir: rhsm-ca
       strategy:
         type: Docker
@@ -145,6 +145,16 @@ parameters:
     description: The name of the secret containing the key for the entitlement.
     required: true
     value: platform-services-controlled-etc-pki-entitlement
+  - name: RHSM_CONF_CONFIG_MAP
+    displayName: RHSM Conf Config Map
+    description: The config map containing the rhsm-conf file content.
+    required: true
+    value: platform-services-controlled-rhsm-conf
+  - name: RHSM_CA_CONFIG_MAP
+    displayName: RHSM CA Config Map
+    description: The config map containing the rhsm-ca file content.
+    required: true
+    value: platform-services-controlled-rhsm-ca
   - name: CPU_LIMIT
     displayName: Resources CPU Limit
     description: The resources CPU limit (in cores) for this build; 0 = use default.
