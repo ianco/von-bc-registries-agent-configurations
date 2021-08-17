@@ -117,7 +117,7 @@ parameters:
     displayName: Source Image Name
     description: The name of the Docker image to be used for the build. Overrides the FROM instruction in the Dockerfile.
     required: false
-    value: bcgovimages/aries-cloudagent:py36-1.15-1_0.6.0
+    value: bcgovimages/aries-cloudagent:py36-1.16-1_0.7.0
   - name: CPU_REQUEST
     displayName: Resources CPU Request
     description: The resources CPU request (in cores) for this build.
