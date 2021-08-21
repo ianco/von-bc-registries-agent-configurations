@@ -336,10 +336,7 @@ parameters:
   - name: BACKUP_VOLUME_NAME
     displayName: Backup Volume Name
     description:
-      The name of the persistent volume used to store the backups.  Please
-      note, when using the recommended nfs-backup storage class the name of the pvc
-      MUST be taken from the manually provisioned claim; nfs-backup storage MUST be
-      provisioned manually.
+      The name of the persistent volume used to store the backups.
     required: true
     value: backup
   - name: BACKUP_VOLUME_SIZE
@@ -359,7 +356,7 @@ parameters:
     displayName: Verification Volume Name
     description:
       The name for the verification volume, used for restoring and verifying
-      backups.  When using the recommend nfs-backup storage class for backups, this
+      backups.  When using the recommend netapp-file-backup storage class for backups, this
       volume MUST be one of netapp-file-standard, or
       netapp-block-standard storage; netapp-block-standard is recommended
       for LARGE databases (as they have far better performance).
