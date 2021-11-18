@@ -1,9 +1,17 @@
 #=========================================================
 # OpenShift template parameters for:
 # Component: .
-# Template File: ../openshift/templates/bc-reg-fdw/bc-reg-fdw-deploy.json
+# Template File: ../openshift/templates/bc-reg-fdw/bc-reg-fdw-deploy.yaml
 #=========================================================
 NAME=bc-reg-fdw
+ROLE=fdw
+EVENT_PROCESSOR_ROLE=event-processor
+SCHEMA_SPY_ROLE=schema-spy-oracle
+AUDIT_ROLE=audit
+AUDIT_APP_NAME=Audit
+AUDIT_APP_SUFFIX=
+MONITORING_SERVICES_NAMESPACE=ca7f8f
+NAMESPACE=7cba16
 SUFFIX=-primary
 APP_NAME=BcRegistriesAgent
 APP_GROUP=primary-instance
@@ -27,6 +35,8 @@ TAG_NAME=dev
 MOUNT_PATH=/var/lib/pgsql/data
 PERSISTENT_VOLUME_SIZE=2Gi
 PERSISTENT_VOLUME_CLASS=netapp-file-standard
+FDW_CIDR=
+BACKUP=false
 CPU_REQUEST=10m
 CPU_LIMIT=750m
 MEMORY_REQUEST=10Mi
