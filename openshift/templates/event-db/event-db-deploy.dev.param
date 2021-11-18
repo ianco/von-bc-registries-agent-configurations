@@ -1,9 +1,18 @@
 #=========================================================
 # OpenShift template parameters for:
 # Component: .
-# Template File: ../openshift/templates/event-db/event-db-deploy.json
+# Template File: ../openshift/templates/event-db/event-db-deploy.yaml
 #=========================================================
 # NAME=event-db
+# ROLE=event-db
+# EVENT_PROCESSOR_ROLE=event-processor
+# BACKUP_ROLE=backup
+# BACKUP_APP_NAME=Backup
+# AUDIT_ROLE=audit
+# AUDIT_APP_NAME=Audit
+# AUDIT_APP_SUFFIX=
+# MONITORING_SERVICES_NAMESPACE=ca7f8f
+# NAMESPACE=7cba16
 # SUFFIX=-primary
 # APP_NAME=BcRegistriesAgent
 # APP_GROUP=primary-instance
@@ -17,6 +26,7 @@ TAG_NAME=dev
 # MOUNT_PATH=/var/lib/pgsql/data
 # PERSISTENT_VOLUME_SIZE=30Gi
 # PERSISTENT_VOLUME_CLASS=netapp-file-standard
+# BACKUP=true
 # CPU_REQUEST=10m
 # CPU_LIMIT=1500m
 # MEMORY_REQUEST=10Mi
