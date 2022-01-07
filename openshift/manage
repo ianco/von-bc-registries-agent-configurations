@@ -164,6 +164,14 @@ usage () {
     removeAgentConnections
       - Remove all agent connections.
 
+    tagApplicationImages <sourceTag/> <destinationTag/>
+      - Tags all of the application images.
+      - Handy for making backups of images.
+
+    untagApplicationImages <tag/>
+      - Deletes a specific tag from all of the application images.
+      - Handy for cleaning up backups of images.      
+
     scaleUp
       - Scale up one or more pods.
         For example;
@@ -762,6 +770,45 @@ function removeAgentConnections(){
     echo
   )
 }
+
+function tagApplicationImages()
+{
+  (
+    _sourceTag=${1}
+    _destTag=${2}
+
+    if [ -z "${_sourceTag}" ] || [ -z "${_destTag}" ]; then
+      echoError "\ntagApplicationImages; You MUST supply both 'source' and 'destination' tag.\n"
+      exit 1
+    fi
+
+    images="agent backup bcreg-controller bc-reg-fdw db event-processor schema-spy-with-oracle-jdbc"
+    for image in ${images}; do
+      # Tag images ...
+      echo -e "\nTagging ${image}:${_sourceTag} as ${image}:${_destTag} ..."
+      oc -n ${TOOLS} tag ${image}:${_sourceTag} ${image}:${_destTag}
+    done
+  )
+}
+
+function untagApplicationImages()
+{
+  (
+    _tag=${1}
+
+    if [ -z "${_tag}" ]; then
+      echoError "\nuntagApplicationImages; You MUST supply a tag.\n"
+      exit 1
+    fi
+
+    images="agent backup bcreg-controller bc-reg-fdw db event-processor schema-spy-with-oracle-jdbc"
+    for image in ${images}; do
+      # Untag images ...
+      echo -e "\nDeleting tag ${image}:${_tag} ..."
+      oc -n ${TOOLS} tag -d ${image}:${_tag}
+    done
+  )
+}
 # =================================================================================================================
 
 pushd ${SCRIPT_HOME} >/dev/null
@@ -901,6 +948,12 @@ case "${_cmd}" in
   removeagentconnections)
     agentPodName=${1:-agent}
     removeAgentConnections "${agentPodName}"
+    ;;
+  tagapplicationimages)
+    tagApplicationImages ${@}
+    ;;
+  untagapplicationimages)
+    untagApplicationImages ${@}
     ;;
 
   scaleup)
