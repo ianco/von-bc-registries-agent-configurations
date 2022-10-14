@@ -310,7 +310,7 @@ parameters:
     displayName: BC Registries Database Host
     description: BC Registries Database Host.
     required: true
-    value: postgresql-lear-standby-dev
+    value: postgresql-lear-standby-dev.73c567-dev
   - name: LEAR_DB_PORT
     displayName: BC Registries Database Port
     description: BC Registries Database Port.
