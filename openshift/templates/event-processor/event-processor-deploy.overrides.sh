@@ -13,9 +13,13 @@ if createOperation; then
   # Get the webhook URL
   readParameter "WEBHOOK_URL - Please provide the webhook endpoint URL.  If left blank, the webhook integration feature will be disabled:" WEBHOOK_URL "false"
   parseHostnameParameter "WEBHOOK_URL" "WEBHOOK_URL_HOST"
+  readParameter "LEAR_DB_USER - Please provide the LEAR db user id." LEAR_DB_USER "false"
+  readParameter "LEAR_DB_PASSWORD - Please provide the LEAR db password." LEAR_DB_PASSWORD "false"
 else
   printStatusMsg "Update operation detected ...\nSkipping the prompts for the WEBHOOK_URL secret ...\n"
   writeParameter "WEBHOOK_URL" "prompt_skipped" "false"
+  writeParameter "LEAR_DB_USER" "prompt_skipped" "false"
+  writeParameter "LEAR_DB_PASSWORD" "prompt_skipped" "false"
 
   # Get WEBHOOK_URL_HOST from secret
   printStatusMsg "Getting WEBHOOK_URL_HOST for the ExternalNetwork definition from secret ...\n"
