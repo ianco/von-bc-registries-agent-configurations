@@ -124,6 +124,22 @@ objects:
                     secretKeyRef:
                       name: ${BC_REG_DB_HOST}${SUFFIX}
                       key: database-password
+                - name: LEAR_DB_HOST
+                  value: ${LEAR_DB_HOST}${SUFFIX}
+                - name: LEAR_DB_PORT
+                  value: ${LEAR_DB_PORT}
+                - name: LEAR_DB_DATABASE
+                  value: ${LEAR_DB_DATABASE}
+                - name: LEAR_DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${LEAR_DB_HOST}${SUFFIX}
+                      key: database-user
+                - name: LEAR_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${LEAR_DB_HOST}${SUFFIX}
+                      key: database-password
                 - name: EVENT_PROC_DB_HOST
                   value: ${EVENT_PROC_DB_HOST}${SUFFIX}
                 - name: EVENT_PROC_DB_PORT
@@ -290,6 +306,21 @@ parameters:
     description: BC Registries Database Name.
     required: true
     value: BC_REGISTRIES
+  - name: LEAR_DB_HOST
+    displayName: BC Registries Database Host
+    description: BC Registries Database Host.
+    required: true
+    value: postgresql-lear-standby-dev
+  - name: LEAR_DB_PORT
+    displayName: BC Registries Database Port
+    description: BC Registries Database Port.
+    required: true
+    value: "5432"
+  - name: LEAR_DB_DATABASE
+    displayName: BC Registries Database Name
+    description: BC Registries Database Name.
+    required: true
+    value: lear
   - name: EVENT_PROC_DB_HOST
     displayName: Event Processor Database Host
     description: Event Processor Database Host.
