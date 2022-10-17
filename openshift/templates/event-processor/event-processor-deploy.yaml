@@ -21,6 +21,11 @@ objects:
     stringData:
       webhook-url: ${WEBHOOK_URL}
       webhook-url-host: ${WEBHOOK_URL_HOST}
+
+      lear-db-host-fqn: ${LEAR_DB_HOST}.${LEAR_DB_NAMESPACE}
+      lear-db-name: ${LEAR_DB_DATABASE}
+      lear-db-user: ${LEAR_DB_USER}
+      lear-db-password: ${LEAR_DB_PASSWORD}
     type: Opaque
 
   - kind: Service
@@ -124,22 +129,30 @@ objects:
                     secretKeyRef:
                       name: ${BC_REG_DB_HOST}${SUFFIX}
                       key: database-password
+
                 - name: LEAR_DB_HOST
-                  value: ${LEAR_DB_HOST}${SUFFIX}
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}${SUFFIX}
+                      key: lear-db-host-fqn
                 - name: LEAR_DB_PORT
                   value: ${LEAR_DB_PORT}
                 - name: LEAR_DB_DATABASE
-                  value: ${LEAR_DB_DATABASE}
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}${SUFFIX}
+                      key: lear-db-name
                 - name: LEAR_DB_USER
                   valueFrom:
                     secretKeyRef:
-                      name: ${LEAR_DB_HOST}${SUFFIX}
-                      key: database-user
+                      name: ${NAME}${SUFFIX}
+                      key: lear-db-user
                 - name: LEAR_DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: ${LEAR_DB_HOST}${SUFFIX}
-                      key: database-password
+                      name: ${NAME}${SUFFIX}
+                      key: lear-db-password
+
                 - name: EVENT_PROC_DB_HOST
                   value: ${EVENT_PROC_DB_HOST}${SUFFIX}
                 - name: EVENT_PROC_DB_PORT
@@ -295,7 +308,7 @@ parameters:
     displayName: BC Registries Database Host
     description: BC Registries Database Host.
     required: true
-    value: bc-reg-fdw-primary
+    value: bc-reg-fdw
   - name: BC_REG_DB_PORT
     displayName: BC Registries Database Port
     description: BC Registries Database Port.
@@ -306,26 +319,45 @@ parameters:
     description: BC Registries Database Name.
     required: true
     value: BC_REGISTRIES
+
   - name: LEAR_DB_HOST
     displayName: BC Registries Database Host
-    description: BC Registries Database Host.
-    required: true
-    value: postgresql-lear-standby-dev.73c567-dev
+    description: The name of the BC Registries Database Host instance.
+    required: false
+    value:
+  - name: LEAR_DB_NAMESPACE
+    displayName: BC Registries Database Namespace
+    description: The namespace in which the BC Registries Database Host instance resides.
+    required: false
+    value:
   - name: LEAR_DB_PORT
     displayName: BC Registries Database Port
-    description: BC Registries Database Port.
+    description: The port number on which the BC Registries Database Host is listening.
     required: true
     value: "5432"
   - name: LEAR_DB_DATABASE
     displayName: BC Registries Database Name
-    description: BC Registries Database Name.
+    description: The name of the BC Registries Database.
+    required: false
+    value:
+  - name: LEAR_DB_USER
+    displayName: BC Registries Database Usename
+    description: The username to us when connecting to the BC Registries Database.
     required: true
-    value: lear
+    generate: expression
+    from: "[a-zA-Z_][a-zA-Z0-9_]{10}"
+  - name: LEAR_DB_PASSWORD
+    displayName: BC Registries Database Usename
+    description: The username to us when connecting to the BC Registries Database.
+    required: true
+    generate: expression
+    from: "[a-zA-Z0-9_~!@#$%^&*()-=<>,.?;:|]{16}"
+
   - name: EVENT_PROC_DB_HOST
     displayName: Event Processor Database Host
     description: Event Processor Database Host.
     required: true
-    value: event-db-primary
+    value: event-db
   - name: EVENT_PROC_DB_PORT
     displayName: Event Processor Database Port
     description: Event Processor Database Port.
@@ -340,7 +372,7 @@ parameters:
     displayName: Mara Database Host
     description: Mara Database Host.
     required: true
-    value: event-processor-log-db-primary
+    value: event-processor-log-db
   - name: MARA_DB_PORT
     displayName: Mara Database Port
     description: Mara Database Port.
@@ -377,7 +409,7 @@ parameters:
     displayName: Webhook Log Level
     description: The webhook log level filter; 0=Error, 1=Warning, 2=Info
     required: false
-    value: "2"
+    value: "0"
   - name: PROJECT_NAME
     displayName: Project Name (Environment Id)
     description:
