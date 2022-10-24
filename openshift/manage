@@ -99,6 +99,11 @@ usage () {
         Runs the './run-step.sh bcreg/bc_reg_pipeline.py' pipeline script
         on an instance of a event-processor pod.
 
+    runPipelineLear
+      - Run the pipeline for the given environment.
+        Runs the './run-step.sh bcreg/bc_reg_pipeline.py' pipeline script
+        on an instance of a event-processor pod.
+
     getFailedCredErrors
       - Gets a summary of the errors encounters during credential posting, a summary of the
         error messages reported by getPipelineStatus.
@@ -649,7 +654,7 @@ function getPipelineStatus() {
 function runPipeline() {
   _podName=${1}
   if [ -z "${_podName}" ]; then
-    echoError "\nrunPipelineStatus; You MUST specify a pod name.\n"
+    echoError "\nrunPipeline; You MUST specify a pod name.\n"
     exit 1
   fi
 
@@ -657,6 +662,19 @@ function runPipeline() {
   runInContainer \
     ${_podName}${resourceSuffix} \
     'cd scripts && ./run-step.sh bcreg/bc_reg_pipeline.py'
+}
+
+function runPipelineLear() {
+  _podName=${1}
+  if [ -z "${_podName}" ]; then
+    echoError "\nrunPipelineLear; You MUST specify a pod name.\n"
+    exit 1
+  fi
+
+  echo
+  runInContainer \
+    ${_podName}${resourceSuffix} \
+    'cd scripts && ./run-step.sh bcreg/bc_reg_pipeline_lear.py'
 }
 
 function getRunningProcesses() {
