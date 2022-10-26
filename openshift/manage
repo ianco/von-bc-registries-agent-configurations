@@ -600,30 +600,6 @@ queueOrganization() {
     "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select 'BC_REG', '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing);\""
 }
 
-requeueOrganizationLear() {
-  _corpNum=${1}
-  _podName=${2}
-  if [ -z "${_corpNum}" ] || [ -z "${_podName}" ]; then
-    echo -e \\n"requeueOrganizationLear; Missing parameter!"\\n
-    exit 1
-  fi
-
-  # Remove affected credential_log records
-  runInContainer -v \
-    ${_podName}${resourceSuffix} \
-    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"delete from credential_log where corp_num in ('${_corpNum}');\""
-
-  # Remove affected corp_history_log records
-  runInContainer -v \
-    ${_podName}${resourceSuffix} \
-    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"delete from corp_history_log where corp_num in ('${_corpNum}');\""
-
-  # Requeue affected event_by_corp_filing records
-  runInContainer -v \
-    ${_podName}${resourceSuffix} \
-    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"update event_by_corp_filing set process_success = null, process_date = null, process_msg = null where corp_num in ('${_corpNum}');\""
-}
-
 queueOrganizationLear() {
   _corpNum=${1}
   _podName=${2}
@@ -969,6 +945,16 @@ case "${_cmd}" in
     dbPodName=${2:-event-db}
     queueOrganization "${corpNum}" "${dbPodName}"
     ;;
+  requeueorganizationLear)
+    corpNum=${1}
+    dbPodName=${2:-event-db}
+    requeueOrganization "${corpNum}" "${dbPodName}"
+    ;;
+  queueorganizationLear)
+    corpNum=${1}
+    dbPodName=${2:-event-db}
+    queueOrganizationLear "${corpNum}" "${dbPodName}"
+    ;;
   getpipelinestatus)
     eventProcessorPodName=${1:-event-processor}
     getPipelineStatus "${eventProcessorPodName}"
@@ -976,6 +962,10 @@ case "${_cmd}" in
   runpipeline)
     eventProcessorPodName=${1:-event-processor}
     runPipeline "${eventProcessorPodName}"
+    ;;
+  runpipelineLear)
+    eventProcessorPodName=${1:-event-processor}
+    runPipelineLear "${eventProcessorPodName}"
     ;;
   getrunningprocesses)
     getRunningProcesses ${@}
