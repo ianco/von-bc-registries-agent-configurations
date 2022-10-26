@@ -75,12 +75,31 @@ usage () {
         Example:
           $0 -e dev queueOrganization 54321
 
+    requeueOrganizationLear <corp_num>
+      - Use with caution.  Requeue a specific company that may have already been processed.
+        Where:
+          - <corp_num>, is the corp_num from corp_history_log for the organization to requeue/reprocess.
+        Example:
+          $0 -e dev requeueOrganizationLear 54321
+
+    queueOrganizationLear <corp_num>
+      - Use with caution.  Queue a specific company that has *not* already been processed.
+        Where:
+          - <corp_num>, is the corp_num from BC Registries for the organization to queue/process.
+        Example:
+          $0 -e dev queueOrganizationLear 54321
+
     getPipelineStatus
       - Get the pipeline status for the given environment.
         Runs the './run-step.sh bcreg/display_pipeline_status.py' pipeline script
         on an instance of a event-processor pod.
 
     runPipeline
+      - Run the pipeline for the given environment.
+        Runs the './run-step.sh bcreg/bc_reg_pipeline.py' pipeline script
+        on an instance of a event-processor pod.
+
+    runPipelineLear
       - Run the pipeline for the given environment.
         Runs the './run-step.sh bcreg/bc_reg_pipeline.py' pipeline script
         on an instance of a event-processor pod.
@@ -578,7 +597,21 @@ queueOrganization() {
   # Queue affected event_by_corp_filing records
   runInContainer -v \
     ${_podName}${resourceSuffix} \
-    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select system_type_cd, '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing);\""
+    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select 'BC_REG', '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing);\""
+}
+
+queueOrganizationLear() {
+  _corpNum=${1}
+  _podName=${2}
+  if [ -z "${_corpNum}" ] || [ -z "${_podName}" ]; then
+    echo -e \\n"queueOrganizationLear; Missing parameter!"\\n
+    exit 1
+  fi
+
+  # Queue affected event_by_corp_filing records
+  runInContainer -v \
+    ${_podName}${resourceSuffix} \
+    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select 'BCREG_LEAR', '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing);\""
 }
 
 function getPipelineStatus() {
@@ -597,7 +630,7 @@ function getPipelineStatus() {
 function runPipeline() {
   _podName=${1}
   if [ -z "${_podName}" ]; then
-    echoError "\nrunPipelineStatus; You MUST specify a pod name.\n"
+    echoError "\nrunPipeline; You MUST specify a pod name.\n"
     exit 1
   fi
 
@@ -605,6 +638,19 @@ function runPipeline() {
   runInContainer \
     ${_podName}${resourceSuffix} \
     'cd scripts && ./run-step.sh bcreg/bc_reg_pipeline.py'
+}
+
+function runPipelineLear() {
+  _podName=${1}
+  if [ -z "${_podName}" ]; then
+    echoError "\nrunPipelineLear; You MUST specify a pod name.\n"
+    exit 1
+  fi
+
+  echo
+  runInContainer \
+    ${_podName}${resourceSuffix} \
+    'cd scripts && ./run-step.sh bcreg/bc_reg_pipeline_lear.py'
 }
 
 function getRunningProcesses() {
@@ -899,6 +945,16 @@ case "${_cmd}" in
     dbPodName=${2:-event-db}
     queueOrganization "${corpNum}" "${dbPodName}"
     ;;
+  requeueorganizationLear)
+    corpNum=${1}
+    dbPodName=${2:-event-db}
+    requeueOrganization "${corpNum}" "${dbPodName}"
+    ;;
+  queueorganizationLear)
+    corpNum=${1}
+    dbPodName=${2:-event-db}
+    queueOrganizationLear "${corpNum}" "${dbPodName}"
+    ;;
   getpipelinestatus)
     eventProcessorPodName=${1:-event-processor}
     getPipelineStatus "${eventProcessorPodName}"
@@ -906,6 +962,10 @@ case "${_cmd}" in
   runpipeline)
     eventProcessorPodName=${1:-event-processor}
     runPipeline "${eventProcessorPodName}"
+    ;;
+  runpipelineLear)
+    eventProcessorPodName=${1:-event-processor}
+    runPipelineLear "${eventProcessorPodName}"
     ;;
   getrunningprocesses)
     getRunningProcesses ${@}
