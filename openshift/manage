@@ -945,12 +945,12 @@ case "${_cmd}" in
     dbPodName=${2:-event-db}
     queueOrganization "${corpNum}" "${dbPodName}"
     ;;
-  requeueorganizationLear)
+  requeueorganizationlear)
     corpNum=${1}
     dbPodName=${2:-event-db}
     requeueOrganization "${corpNum}" "${dbPodName}"
     ;;
-  queueorganizationLear)
+  queueorganizationlear)
     corpNum=${1}
     dbPodName=${2:-event-db}
     queueOrganizationLear "${corpNum}" "${dbPodName}"
