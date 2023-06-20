@@ -963,7 +963,7 @@ case "${_cmd}" in
     eventProcessorPodName=${1:-event-processor}
     runPipeline "${eventProcessorPodName}"
     ;;
-  runpipelineLear)
+  runpipelinelear)
     eventProcessorPodName=${1:-event-processor}
     runPipelineLear "${eventProcessorPodName}"
     ;;
