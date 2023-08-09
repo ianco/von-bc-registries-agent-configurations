@@ -504,18 +504,17 @@ function requeueSkippedCorpTypes() {
     exit 1
   fi  
 
-  _skipped=${2}
-  if [ -z "${_skipped}" ]; then
+  _skippedTypes=${2}
+  if [ -z "${_skippedTypes}" ]; then
     echoError "\nrequeueSkippedCorpTypes; You MUST specify a list of skipped corp types.\n"
     exit 1
   fi
 
-  # Iterate over _skipped and requeue each corp
-  for corp in ${_skipped}; do
+  for type in ${_skippedTypes}; do
     echo
     runInContainer -v \
       ${_podName}${resourceSuffix} \
-      "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"update event_by_corp_filing set process_success = null, process_date = null, process_msg = null where process_msg like '${corp}: Skipped%';\""
+      "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"update event_by_corp_filing set process_success = null, process_date = null, process_msg = null where process_msg like '${type}: Skipped%';\""
   done
 }
 
