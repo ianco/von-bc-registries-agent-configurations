@@ -61,6 +61,9 @@ usage () {
     requeueProcessedCreds
       - Use with caution.  Requeue any credentials that have already been posted.
 
+    requeueSkippedCorpTypes <skippedCorpTypes>
+      - Requeue any corporation from the provided list of types that were initally skipped from processing
+
     requeueOrganization <corp_num>
       - Use with caution.  Requeue a specific company that may have already been processed.
         Where:
@@ -492,6 +495,28 @@ EOF
     # - Test posting a few credentials using the pipelines
     echo "You can now verifiy ICIA has successfully registered with ICOB.  Following that you can test things by issuing a few credentials."
   )
+}
+
+function requeueSkippedCorpTypes() {
+  _podName=${1}
+  if [ -z "${_podName}" ]; then
+    echoError "\nrequeueSkippedCorpTypes; You MUST specify a pod name.\n"
+    exit 1
+  fi  
+
+  _skipped=${2}
+  if [ -z "${_skipped}" ]; then
+    echoError "\nrequeueSkippedCorpTypes; You MUST specify a list of skipped corp types.\n"
+    exit 1
+  fi
+
+  # Iterate over _skipped and requeue each corp
+  for corp in ${_skipped}; do
+    echo
+    runInContainer -v \
+      ${_podName}${resourceSuffix} \
+      "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"update event_by_corp_filing set process_success = null, process_date = null, process_msg = null where process_msg like '${corp}: Skipped%';\""
+  done
 }
 
 function requeueProcessedCreds() {
@@ -934,6 +959,11 @@ case "${_cmd}" in
   requeueprocessedcreds)
     dbPodName=${1:-event-db}
     requeueProcessedCreds "${dbPodName}"
+    ;;
+  requeueskippedcorptypes)
+    dbPodName=${1:-event-db}
+    skipped=${2}
+    requeueSkippedCorpTypes "${dbPodName}" "${skipped}"
     ;;
   requeueorganization)
     corpNum=${1}
