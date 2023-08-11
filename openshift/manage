@@ -61,8 +61,14 @@ usage () {
     requeueProcessedCreds
       - Use with caution.  Requeue any credentials that have already been posted.
 
-    requeueSkippedCorpTypes <skippedCorpTypes>
-      - Requeue any corporation from the provided list of types that were initally skipped from processing
+    requeueSkippedCorpTypes [ -d <dbPodName> ] <skippedCorpTypes>
+      - Requeue any corporation from the provided list of types that were initally skipped from processing.
+        Where:
+          - [ -d <dbPodName> ] - Optional - Specify the friendly name of the database pod containing the records.
+          - <skippedCorpTypes> - A space seperated list of corporation types to requeue.
+        Examples:
+          $0 -e dev requeueSkippedCorpTypes FI LIB PAR
+          $0 -e dev requeueSkippedCorpTypes -d my-event-db FI LIB PAR
 
     requeueOrganization <corp_num>
       - Use with caution.  Requeue a specific company that may have already been processed.
@@ -197,7 +203,7 @@ usage () {
 
     untagApplicationImages <tag/>
       - Deletes a specific tag from all of the application images.
-      - Handy for cleaning up backups of images.      
+      - Handy for cleaning up backups of images.
 
     scaleUp
       - Scale up one or more pods.
@@ -498,13 +504,20 @@ EOF
 }
 
 function requeueSkippedCorpTypes() {
-  _podName=${1}
-  if [ -z "${_podName}" ]; then
-    echoError "\nrequeueSkippedCorpTypes; You MUST specify a pod name.\n"
-    exit 1
-  fi  
 
-  _skippedTypes=${2}
+  local OPTIND
+  unset _dbPodName
+  while getopts d: FLAG; do
+    case $FLAG in
+      d )
+        _dbPodName=$OPTARG
+        ;;
+    esac
+  done
+  shift $((OPTIND-1))
+
+  _podName=${_dbPodName:-event-db}
+  _skippedTypes=${@}
   if [ -z "${_skippedTypes}" ]; then
     echoError "\nrequeueSkippedCorpTypes; You MUST specify a list of skipped corp types.\n"
     exit 1
@@ -960,9 +973,7 @@ case "${_cmd}" in
     requeueProcessedCreds "${dbPodName}"
     ;;
   requeueskippedcorptypes)
-    dbPodName=${1:-event-db}
-    skipped=${2}
-    requeueSkippedCorpTypes "${dbPodName}" "${skipped}"
+    requeueSkippedCorpTypes ${@}
     ;;
   requeueorganization)
     corpNum=${1}
