@@ -723,11 +723,21 @@ function getCredentialPostRate() {
   credentialsPosted=$(runInContainer "${_dbPodName}${resourceSuffix}" \
     "psql -d bc_reg_db -t -c \"select count(*) from credential_log where process_success is not null AND process_success = 'Y' AND process_date >= '${startTime}';\"")
 
+  credentialSummary=$(runInContainer "${_dbPodName}${resourceSuffix}" \
+    "psql -d bc_reg_db -c \"select count(1) as total_credentials, count(1) filter (where process_success is null) as unprocessed, count(1) filter (where process_success is not null) as processed, count(1) filter (where process_success = 'Y') as posted, count(1) filter (where process_success is not null and process_success != 'Y' and process_success != 'N' ) as held, count(1) filter (where process_success = 'N') as errors from credential_log;\"")
+  unprocessedCredentials=$(echo "${credentialSummary}" | awk 'NR==3' | awk -F '|' '{print $2}' | tr -d '[:space:]')
+
   if [ ! -z ${runningForSeconds} ]; then
     # Do floating point math ...
     postsPerSecond=$(awk "BEGIN {print (${credentialsPosted}/${runningForSeconds})}")
     postsPerMinute=$(awk "BEGIN {print (${postsPerSecond}*60)}")
     elapsedTime="$(($runningForSeconds/3600))h:$(($runningForSeconds%3600/60))m:$(($runningForSeconds%60))s"
+
+    secondsRemaining=$(awk "BEGIN {print (${unprocessedCredentials}/${postsPerSecond})}")
+    hoursRemaining=$(awk "BEGIN {print (${secondsRemaining}/3600)}")
+    minutesRemaining=$(awk "BEGIN {print (${secondsRemaining}%3600/60)}")
+    secondsRemaining=$(awk "BEGIN {print (${secondsRemaining}%60)}")
+    estimatedTimeRemaining="$(echo  ${hoursRemaining} | grep -o '^[0-9]*')h:$(echo  ${minutesRemaining} | grep -o '^[0-9]*')m:$(echo  ${secondsRemaining} | grep -o '^[0-9]*')s"
   else
     echo "'/bin/sh ./run-step.sh bcreg/bc_reg_pipeline_post_credentials.py' is not currently running on ${_eventProcessorPodName}."
   fi
@@ -746,6 +756,9 @@ function getCredentialPostRate() {
   printf "  - %.0f per second, or\n" "${postsPerSecond}"
   printf "  - %.0f per minute\n" "${postsPerMinute}"
   echo "  - Over the period of ${elapsedTime}"
+  echo -e \\n"  - Estimating ${estimatedTimeRemaining} to process the remaining $(printf "%'.0f\n" ${unprocessedCredentials}) credentials"
+  echo -e \\n"Credential Summary:"
+  echo -e \\n"$(echo "${credentialSummary}" | head -n -1)"
 }
 
 function getCredentialStageRate() {
