@@ -108,10 +108,18 @@ usage () {
         Runs the './run-step.sh bcreg/bc_reg_pipeline.py' pipeline script
         on an instance of a event-processor pod.
 
+    processQueuedRecords
+      - Similar to run runPipeline, but skips the find unprocessed events step, so only queued
+        records are porcessed.
+
     runPipelineLear
       - Run the pipeline for the given environment.
         Runs the './run-step.sh bcreg/bc_reg_pipeline.py' pipeline script
         on an instance of a event-processor pod.
+
+    processQueuedRecordsLear
+      - Similar to run runPipelineLear, but skips the find unprocessed events step, so only queued
+        records are porcessed.
 
     getFailedCredErrors
       - Gets a summary of the errors encounters during credential posting, a summary of the
@@ -677,6 +685,25 @@ function runPipeline() {
     'cd scripts && ./run-step.sh bcreg/bc_reg_pipeline.py'
 }
 
+function processQueuedRecords() {
+  _podName=${1}
+  if [ -z "${_podName}" ]; then
+    echoError "\nprocessQueuedRecords; You MUST specify a pod name.\n"
+    exit 1
+  fi
+
+  echo
+  runInContainer \
+    ${_podName}${resourceSuffix} \
+    'cd scripts && ./run-step.sh bcreg/process-corps-generate-creds.py'
+  runInContainer \
+    ${_podName}${resourceSuffix} \
+    'cd scripts && ./run-step.sh bcreg/generate-creds.py'
+  runInContainer \
+    ${_podName}${resourceSuffix} \
+    'cd scripts && ./run-step.sh bcreg/submit-creds.py'
+}
+
 function runPipelineLear() {
   _podName=${1}
   if [ -z "${_podName}" ]; then
@@ -688,6 +715,25 @@ function runPipelineLear() {
   runInContainer \
     ${_podName}${resourceSuffix} \
     'cd scripts && ./run-step.sh bcreg/bc_reg_pipeline_lear.py'
+}
+
+function processQueuedRecordsLear() {
+  _podName=${1}
+  if [ -z "${_podName}" ]; then
+    echoError "\nprocessQueuedRecordsLear; You MUST specify a pod name.\n"
+    exit 1
+  fi
+
+  echo
+  runInContainer \
+    ${_podName}${resourceSuffix} \
+    'cd scripts && ./run-step.sh bcreg/process-corps-generate-creds_lear.py'
+  runInContainer \
+    ${_podName}${resourceSuffix} \
+    'cd scripts && ./run-step.sh bcreg/generate-creds_lear.py'
+  runInContainer \
+    ${_podName}${resourceSuffix} \
+    'cd scripts && ./run-step.sh bcreg/submit-creds_lear.py'
 }
 
 function getRunningProcesses() {
@@ -1016,9 +1062,17 @@ case "${_cmd}" in
     eventProcessorPodName=${1:-event-processor}
     runPipeline "${eventProcessorPodName}"
     ;;
+  processqueuedrecords)
+    eventProcessorPodName=${1:-event-processor}
+    processQueuedRecords "${eventProcessorPodName}"
+    ;;
   runpipelinelear)
     eventProcessorPodName=${1:-event-processor}
     runPipelineLear "${eventProcessorPodName}"
+    ;;
+  processqueuedrecordslear)
+    eventProcessorPodName=${1:-event-processor}
+    processQueuedRecordsLear "${eventProcessorPodName}"
     ;;
   getrunningprocesses)
     getRunningProcesses ${@}
