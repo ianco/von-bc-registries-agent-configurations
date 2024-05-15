@@ -75,28 +75,46 @@ usage () {
         Where:
           - <corp_num>, is the corp_num from corp_history_log for the organization to requeue/reprocess.
         Example:
-          $0 -e dev requeueOrganization 54321
+          $0 -e dev requeueOrganization 0054321
 
     queueOrganization <corp_num>
       - Use with caution.  Queue a specific company that has *not* already been processed.
         Where:
           - <corp_num>, is the corp_num from BC Registries for the organization to queue/process.
         Example:
-          $0 -e dev queueOrganization 54321
+          $0 -e dev queueOrganization 0054321
+
+    queueOrgForRelnsUpdate <corp_num> <related_corp_num>
+      - Use with caution.  Queue a specific company that has *not* already been processed, and also delete existing relationships.
+        Use this where there are missing relationships reported in OrgBook.
+        Where:
+          - <corp_num>, is the corp_num from BC Registries for the organization to queue/process.
+          - <related_corp_num>, is the related corp_num from BC Registries for related credentials to delete.
+        Example:
+          $0 -e dev queueOrgForRelnsUpdate 0054321 FM0054321
 
     requeueOrganizationLear <corp_num>
       - Use with caution.  Requeue a specific company that may have already been processed.
         Where:
           - <corp_num>, is the corp_num from corp_history_log for the organization to requeue/reprocess.
         Example:
-          $0 -e dev requeueOrganizationLear 54321
+          $0 -e dev requeueOrganizationLear FM0054321
 
     queueOrganizationLear <corp_num>
       - Use with caution.  Queue a specific company that has *not* already been processed.
         Where:
           - <corp_num>, is the corp_num from BC Registries for the organization to queue/process.
         Example:
-          $0 -e dev queueOrganizationLear 54321
+          $0 -e dev queueOrganizationLear FM0054321
+
+    queueOrgForRelnsUpdateLear <corp_num> <related_corp_num>
+      - Use with caution.  Queue a specific company that has *not* already been processed, and also delete existing relationships.
+        Use this where there are missing relationships reported in OrgBook.
+        Where:
+          - <corp_num>, is the corp_num from BC Registries for the organization to queue/process.
+          - <related_corp_num>, is the related corp_num from BC Registries for related credentials to delete.
+        Example:
+          $0 -e dev queueOrgForRelnsUpdateLear FM0054321 BC0054321
 
     getPipelineStatus
       - Get the pipeline status for the given environment.
@@ -645,6 +663,26 @@ queueOrganization() {
     "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select 'BC_REG', '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing);\""
 }
 
+queueOrgForRelnsUpdate() {
+  _corpNum=${1}
+  _relatedCorpNum=${2}
+  _podName=${3}
+  if [ -z "${_corpNum}" ] || [ -z "${_relatedCorpNum}" ] || [ -z "${_podName}" ]; then
+    echo -e \\n"queueOrgForRelnsUpdate; Missing parameter!"\\n
+    exit 1
+  fi
+
+  # Delete existing relationship credential records (if any)
+  runInContainer -v \
+    ${_podName}${resourceSuffix} \
+    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"delete from credential_log where corp_num = '${_corpNum}' and credential_type_cd = 'REL' and credential_json->>'associated_registration_id' = '${_relatedCorpNum}';\""
+
+  # Queue affected event_by_corp_filing records
+  runInContainer -v \
+    ${_podName}${resourceSuffix} \
+    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select 'BC_REG', '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing);\""
+}
+
 queueOrganizationLear() {
   _corpNum=${1}
   _podName=${2}
@@ -652,6 +690,26 @@ queueOrganizationLear() {
     echo -e \\n"queueOrganizationLear; Missing parameter!"\\n
     exit 1
   fi
+
+  # Queue affected event_by_corp_filing records
+  runInContainer -v \
+    ${_podName}${resourceSuffix} \
+    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select 'BCREG_LEAR', '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing);\""
+}
+
+queueOrgForRelnsUpdateLear() {
+  _corpNum=${1}
+  _relatedCorpNum=${2}
+  _podName=${3}
+  if [ -z "${_corpNum}" ] || [ -z "${_relatedCorpNum}" ] || [ -z "${_podName}" ]; then
+    echo -e \\n"queueOrgForRelnsUpdateLear; Missing parameter!"\\n
+    exit 1
+  fi
+
+  # Delete existing relationship credential records (if any)
+  runInContainer -v \
+    ${_podName}${resourceSuffix} \
+    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"delete from credential_log where corp_num = '${_corpNum}' and credential_type_cd = 'REL' and credential_json->>'associated_registration_id' = '${_relatedCorpNum}';\""
 
   # Queue affected event_by_corp_filing records
   runInContainer -v \
@@ -1044,6 +1102,12 @@ case "${_cmd}" in
     dbPodName=${2:-event-db}
     queueOrganization "${corpNum}" "${dbPodName}"
     ;;
+  queueorgforrelnsupdate)
+    corpNum=${1}
+    relatedCorpNum=${2}
+    dbPodName=${3:-event-db}
+    queueOrgForRelnsUpdate "${corpNum}" "${relatedCorpNum}" "${dbPodName}"
+    ;;
   requeueorganizationlear)
     corpNum=${1}
     dbPodName=${2:-event-db}
@@ -1053,6 +1117,12 @@ case "${_cmd}" in
     corpNum=${1}
     dbPodName=${2:-event-db}
     queueOrganizationLear "${corpNum}" "${dbPodName}"
+    ;;
+  queueorgforrelnsupdatelear)
+    corpNum=${1}
+    relatedCorpNum=${2}
+    dbPodName=${3:-event-db}
+    queueOrgForRelnsUpdateLear "${corpNum}" "${relatedCorpNum}" "${dbPodName}"
     ;;
   getpipelinestatus)
     eventProcessorPodName=${1:-event-processor}
