@@ -660,7 +660,7 @@ queueOrganization() {
   # Queue affected event_by_corp_filing records
   runInContainer -v \
     ${_podName}${resourceSuffix} \
-    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select 'BC_REG', '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing);\""
+    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select 'BC_REG', '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing where system_type_cd = 'BC_REG');\""
 }
 
 queueOrgForRelnsUpdate() {
@@ -680,7 +680,7 @@ queueOrgForRelnsUpdate() {
   # Queue affected event_by_corp_filing records
   runInContainer -v \
     ${_podName}${resourceSuffix} \
-    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select 'BC_REG', '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing);\""
+    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select 'BC_REG', '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing where system_type_cd = 'BC_REG');\""
 }
 
 queueOrganizationLear() {
@@ -694,7 +694,7 @@ queueOrganizationLear() {
   # Queue affected event_by_corp_filing records
   runInContainer -v \
     ${_podName}${resourceSuffix} \
-    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select 'BCREG_LEAR', '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing);\""
+    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select 'BCREG_LEAR', '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing where system_type_cd = 'BCREG_LEAR');\""
 }
 
 queueOrgForRelnsUpdateLear() {
@@ -714,7 +714,7 @@ queueOrgForRelnsUpdateLear() {
   # Queue affected event_by_corp_filing records
   runInContainer -v \
     ${_podName}${resourceSuffix} \
-    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select 'BCREG_LEAR', '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing);\""
+    "psql -d "'${POSTGRESQL_DATABASE}'" -ac \"insert into event_by_corp_filing (system_type_cd, corp_num, prev_event_id, prev_event_date, last_event_id, last_event_date, entry_date) select 'BCREG_LEAR', '${_corpNum}', 0, '0001-01-01', last_event_id, last_event_date, now() from event_by_corp_filing where record_id = (select max(record_id) from event_by_corp_filing where system_type_cd = 'BCREG_LEAR');\""
 }
 
 function getPipelineStatus() {
